@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head> 
+    <title>Homepage prototype</title> 
+    <h1> WORKOUT GENERATOR </h1>
+    <a href="login.html">LOGIN</a>
+    <a href="signup.html">SIGN UP</a>
+</head>
+
+<body>
+    
+    <!-- CALORIE CALCULATOR -->
+
+    <h2> Calorie calculator: </h2>
+    <label for="activity_level">Choose activity level</label>
+    <select id="activity_level" name="activity_level">
+        <option value="sedentary">Sedentary: Little to no exercise</option>
+        <option value="light">Lightly Active: Exercise 1-3 times/week</option>
+        <option value="moderate">Moderately Active: exercise 4-5 times/week</option>
+        <option value="active">Active: daily exercise or intense exercise 3-4 times/week</option>
+        <option value="very_active">Very Active: intense exercise 6-7 times/week</option>
+        <option value="extra_active">Extra Active: intense exercise daily or physical labour job</option>
+    </select>
+
+    <br><br>
+
+    <label for="weight">Enter your weight in kg (40-300kg):</label>
+    <input type="number" id="weight" name="weight" min="40" max="300" required>
+
+    <br><br>
+
+    <label for="sex">Choose sex</label>
+    <select id="sex" name="sex">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
+
+    <br><br>
+
+    <label for="height">Enter your height in cm (100-250cm):</label>
+    <input type="number" id="height" name="height" min="100" max="250" required>
+
+    <br><br>
+
+    <button type="submit" class="btn btn-primary">Submit Calorie Prefrences</button>
+
+    <br><br>
+
+<!---      WORKOUT GENERATOR       -->
+
+
+    <h2> Workout generator: </h2>
+    <label for="workout_goal">Select your workout goal:</label>
+    <select id="workout_goal" name="workout_goal">
+        <option value="lose_weight">Lose Weight</option>
+        <option value="gain_muscle">Gain Muscle</option>
+    </select>
+
+    <br><br>
+
+    <label for="workout_days">Select number of workout days per week:</label>
+    <select id="workout_days" name="workout_days">
+        <option value="1">1 day</option>
+        <option value="2">2 days</option>
+        <option value="3">3 days</option>
+        <option value="4">4 days</option>
+        <option value="5">5 days</option>
+        <option value="6">6 days</option>
+        <option value="7">7 days</option>
+    </select>
+
+    <br><br>
+
+    <label for="experience_level">Select your experience level:</label>
+    <select id="experience_level" name="experience_level">
+        <option value="beginner_intermediate">Little to no experience</option>
+        <option value="adept">I already train</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
+
+    <br><br>
+
+</body>
+
+</html>
