@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
-
 <head> 
     <title>Homepage prototype</title> 
-    <h1> WORKOUT GENERATOR </h1>
-    <a href="login.html" class="btn btn-login">LOG IN</a>
-    <a href="signup.html" class="btn btn-signup">SIGN UP</a>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 </head>
 
 <body>
+    
+    <!--- Title, login and signup links -->
+
+    <h1> WORKOUT GENERATOR </h1>
+    <a href="/login" class="btn btn-login">LOG IN</a>
+    <a href="/signup" class="btn btn-signup">SIGN UP</a>
     
     <!-- CALORIE CALCULATOR -->
 
