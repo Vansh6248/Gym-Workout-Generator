@@ -54,6 +54,9 @@
 
 
     <h2> Workout generator: </h2>
+
+    <p> * If you select "Lose Weight", your workout will include cardio exercises, which may increase the duration of each session due to the increased duration of the cardio exercises. </p>
+
     <label for="workout_goal">Select your workout goal:</label>
     <select id="workout_goal" name="workout_goal">
         <option value="lose_weight">Lose Weight</option>
@@ -83,10 +86,20 @@
 
     <br><br>
 
+    <label for="workout_length">Select your workout length:</label>
+    <select id="workout_length" name="workout_length">
+        <option value="short">Short (20-30 minutes)</option>
+        <option value="medium">Medium (30-45 minutes)</option>
+        <option value="long">Long (45+ minutes)</option>
+    </select>
+
+    <br><br>
+
     <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
 
     <br><br>
 
 </body>
+
 
 </html>
