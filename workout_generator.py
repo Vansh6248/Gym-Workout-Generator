@@ -127,26 +127,3 @@ def generate_workout(goal, experience, days, workout_length):
         workout[day_name] = session
 
     return workout
-
-def print_workout(workout):
-    for day in workout:
-        print(day)
-
-        total = 0
-
-        for exercise in workout[day]:
-            print(f"- {exercise['name']} ({exercise['minutes']} mins)")
-            total += exercise["minutes"]
-
-        print(f"Total: {total} mins")
-        print()
-
-if __name__ == "__main__":
-    workout = generate_workout(
-        goal="gain_muscle",
-        experience="beginner_intermediate",
-        days=4,
-        workout_length="medium"
-    )
-
-    print_workout(workout)
