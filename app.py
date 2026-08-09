@@ -1,6 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from workout_generator import generate_workout
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def home():
@@ -9,8 +11,18 @@ def home():
 
 @app.route("/generate", methods=["POST"])
 def generate():
-    print("Button clicked!")
-    return render_template("index.html")
+    goal = request.form.get("workout_goal")
+    experience = request.form.get("experience_level")
+    days = int(request.form.get("workout_days"))
+    workout_length = request.form.get("workout_length")
+
+    workout = generate_workout(
+        goal,
+        experience,
+        days,
+        workout_length
+    )
+    return render_template("workout.html", workout=workout)
 
 
 @app.route("/login")
@@ -22,7 +34,6 @@ def login():
 def signup():
     return render_template("signup.html")
 
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-print('testing')

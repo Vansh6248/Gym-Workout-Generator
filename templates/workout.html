@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Workout</title>
+</head>
+<body>
+    <h1>Your Workout: </h1>
+    {% for day, exercises in workout.items() %}
+        <h2>{{ day }}</h2>
+        {% for exercise in exercises %}
+            <p>
+                {{ exercise["name"] }}
+                - {{ exercise["minutes"] }} minutes
+            </p>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>

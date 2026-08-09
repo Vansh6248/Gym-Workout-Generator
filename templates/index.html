@@ -57,49 +57,52 @@
 
     <p> * If you select "Lose Weight", your workout will include cardio exercises, which may increase the duration of each session due to the increased duration of the cardio exercises. </p>
 
-    <label for="workout_goal">Select your workout goal:</label>
-    <select id="workout_goal" name="workout_goal">
-        <option value="lose_weight">Lose Weight</option>
-        <option value="gain_muscle">Gain Muscle</option>
-    </select>
+    <form action="/generate" method="POST">
+
+        <label for="workout_goal">Select your workout goal:</label>
+        <select id="workout_goal" name="workout_goal">
+            <option value="lose_weight">Lose Weight</option>
+            <option value="gain_muscle">Gain Muscle</option>
+        </select>
+
+        <br><br>
+
+        <label for="workout_days">Select number of workout days per week:</label>
+        <select id="workout_days" name="workout_days">
+            <option value="1">1 day</option>
+            <option value="2">2 days</option>
+            <option value="3">3 days</option>
+            <option value="4">4 days</option>
+            <option value="5">5 days</option>
+            <option value="6">6 days</option>
+            <option value="7">7 days</option>
+        </select>
+
+        <br><br>
+
+        <label for="experience_level">Select your experience level:</label>
+        <select id="experience_level" name="experience_level">
+            <option value="beginner_intermediate">Little to no experience</option>
+            <option value="adept">I already train</option>
+        </select>
+
+        <br><br>
+
+        <label for="workout_length">Select your workout length:</label>
+        <select id="workout_length" name="workout_length">
+            <option value="short">Short (20-30 minutes)</option>
+            <option value="medium">Medium (30-45 minutes)</option>
+            <option value="long">Long (45+ minutes)</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
+    
+    </form>
 
     <br><br>
 
-    <label for="workout_days">Select number of workout days per week:</label>
-    <select id="workout_days" name="workout_days">
-        <option value="1">1 day</option>
-        <option value="2">2 days</option>
-        <option value="3">3 days</option>
-        <option value="4">4 days</option>
-        <option value="5">5 days</option>
-        <option value="6">6 days</option>
-        <option value="7">7 days</option>
-    </select>
-
-    <br><br>
-
-    <label for="experience_level">Select your experience level:</label>
-    <select id="experience_level" name="experience_level">
-        <option value="beginner_intermediate">Little to no experience</option>
-        <option value="adept">I already train</option>
-    </select>
-
-    <br><br>
-
-    <label for="workout_length">Select your workout length:</label>
-    <select id="workout_length" name="workout_length">
-        <option value="short">Short (20-30 minutes)</option>
-        <option value="medium">Medium (30-45 minutes)</option>
-        <option value="long">Long (45+ minutes)</option>
-    </select>
-
-    <br><br>
-
-    <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
-
-    <br><br>
-
-</body>
-
+</body> 
 
 </html>
