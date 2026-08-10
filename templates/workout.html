@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>Your Workout:</h1>
+    <a href="/" class="btn">HOME</a>
     {% for day, session in workout.items() %}
         <h2>{{ day }}</h2>
         {% for exercise in session["exercises"] %}
