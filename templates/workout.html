@@ -4,15 +4,36 @@
     <title>Your Workout</title>
 </head>
 <body>
-    <h1>Your Workout: </h1>
-    {% for day, exercises in workout.items() %}
+    <h1>Your Workout:</h1>
+    {% for day, session in workout.items() %}
         <h2>{{ day }}</h2>
-        {% for exercise in exercises %}
-            <p>
-                {{ exercise["name"] }}
-                - {{ exercise["minutes"] }} minutes
-            </p>
+        {% for exercise in session["exercises"] %}
+            {% if exercise["cardio"] %}
+                <p>
+                    <strong>{{ exercise["name"] }}</strong>
+                    - Cardio - {{ exercise["minutes"] }} minutes
+                </p>
+            {% else %}
+                <p>
+                    <strong>{{ exercise["name"] }}</strong>
+                    - {{ exercise["muscle"] }}
+                    - {{ exercise["sets"] }} sets
+                    x {{ exercise["reps"] }} reps
+                    - {{ exercise["minutes"] }} minutes
+                </p>
+            {% endif %}
         {% endfor %}
+        <p>
+            <strong>Estimated workout time:</strong>
+            {{ session["total_time"] }} minutes
+        </p>
+        {% if session["total_time_with_cardio"] != session["total_time"] %}
+            <p>
+                <strong>Estimated workout time (with cardio exercise):</strong>
+                {{ session["total_time_with_cardio"] }} minutes
+            </p>
+        {% endif %}
+        <p>Rest time per set: 1 minute</p>
     {% endfor %}
 </body>
 </html>

@@ -83,18 +83,33 @@ def get_exercise_count(length):
     return 8
 
 # Main workout generator function which uses the functions above to generate workout based on user input
+# Also features variable sets and reps depending on what muscle group is being trained, which helps to keep the length of the workout down and also increases training efficiency
+# Also incorporates rest timings into the total estimated workout length, which is helps to keep the workout length within the user's preferred range
+
 
 def generate_workout(goal, experience, days, workout_length):
-    exercises = get_exercises(goal, experience)
+    if goal == "lose_weight":
+        exercises = get_exercises("gain_muscle", experience)
+    else:
+        exercises = get_exercises(goal, experience)
+
     week = choose_split(days)
     workout = {}
     used = []
     count = get_exercise_count(workout_length)
 
+    if workout_length == "short":
+        time_limit = 30
+    elif workout_length == "medium":
+        time_limit = 45
+    else:
+        time_limit = 60
+
     for day_name, split in week:
         session = []
         muscles = get_muscles(split)
         each = max(1, count // len(muscles))
+        current_time = 0
 
         for muscle in muscles:
             choices = []
@@ -105,25 +120,68 @@ def generate_workout(goal, experience, days, workout_length):
 
             random.shuffle(choices)
 
-            for exercise in choices[:each]:
+            for exercise in choices:
+                if len(session) >= count:
+                    break
+
+                if muscle in ["Hamstrings", "Calves", "Rear Delts"]:
+                    sets = 2
+                    reps = "8-12"
+                elif muscle in ["Side Delts", "Biceps", "Triceps", "Back"]:
+                    sets = 3
+                    reps = "8-15"
+                else:
+                    sets = 3
+                    reps = "8-12"
+
+                rest_time = sets
+                exercise_time = 6
+                total_exercise_time = exercise_time + rest_time
+
+                if current_time + total_exercise_time > time_limit:
+                    continue
+
                 used.append(exercise[0])
 
                 session.append({
                     "name": exercise[1],
                     "muscle": exercise[3],
-                    "minutes": 6
+                    "sets": sets,
+                    "reps": reps,
+                    "minutes": exercise_time,
+                    "rest_time": rest_time,
+                    "cardio": False
                 })
+
+                current_time += total_exercise_time
 
         if goal == "lose_weight":
-            cardio = get_cardio()
+            cardio_count = random.randint(1, 2)
 
-            if cardio:
-                session.append({
-                    "name": cardio[1],
-                    "muscle": "Cardio",
-                    "minutes": cardio[5]
-                })
+            for _ in range(cardio_count):
+                cardio = get_cardio()
 
-        workout[day_name] = session
+                if cardio:
+                    session.append({
+                        "name": cardio[1],
+                        "muscle": "Cardio",
+                        "sets": None,
+                        "reps": None,
+                        "minutes": cardio[5],
+                        "rest_time": 0,
+                        "cardio": True
+                    })
+
+        cardio_time = 0
+
+        for exercise in session:
+            if exercise["cardio"]:
+                cardio_time += exercise["minutes"]
+
+        workout[day_name] = {
+            "exercises": session,
+            "total_time": current_time,
+            "total_time_with_cardio": current_time + cardio_time
+        }
 
     return workout
