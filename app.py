@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request
 from workout_generator import generate_workout
+from calorie_calculator import calculate_calories
 
 app = Flask(__name__)
-
 
 @app.route("/")
 def home():
     return render_template("index.html")
-
 
 @app.route("/generate", methods=["POST"])
 def generate():
@@ -22,20 +21,34 @@ def generate():
         days,
         workout_length
     )
+
     return render_template("workout.html", workout=workout)
 
+@app.route("/calculate-calories", methods=["POST"])
+def calculate_calories_route():
+    weight = float(request.form.get("weight"))
+    height = float(request.form.get("height"))
+    age = int(request.form.get("age"))
+    sex = request.form.get("sex")
+    activity_level = request.form.get("activity_level")
+
+    calories = calculate_calories(
+        weight,
+        height,
+        age,
+        sex,
+        activity_level
+    )
+
+    return {"calories": calories}
 
 @app.route("/login")
 def login():
     return render_template("login.html")
 
-
 @app.route("/signup")
 def signup():
     return render_template("signup.html")
 
-
 if __name__ == "__main__":
     app.run(debug=True)
-
-    
