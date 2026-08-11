@@ -1,4 +1,4 @@
-/* SECTION 1 - TOP TAGLINE */
+/* ===================TOP TAGLINE (Login/Signup buttons, title) ===================================*/
 
 body {
     margin: 0;
@@ -40,4 +40,76 @@ h1 {
 .btn-login:hover,
 .btn-signup:hover {
     opacity: 0.9;
+}
+
+/* ===========================CALORIE CALCULATOR STYLING ========================*/
+
+h2 {
+    margin-top: 45px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #111827;
+}
+
+#calorie-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 12px;
+    max-width: 900px;
+    padding: 28px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+#calorie-form br {
+    display: none;
+}
+
+#calorie-form label {
+    flex: 0 0 250px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#calorie-form select,
+#calorie-form input {
+    flex: 1 1 300px;
+    max-width: 360px;
+    min-height: 38px;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: white;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+#calorie-form button {
+    flex-basis: 100%;
+    width: fit-content;
+    margin-top: 8px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2563eb;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#calorie-form button:hover {
+    background-color: #1d4ed8;
+}
+
+#calorie-result {
+    margin-top: 14px;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
 }
