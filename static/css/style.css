@@ -1,115 +1,65 @@
-/* ===================TOP TAGLINE (Login/Signup buttons, title) ===================================*/
+/* SECTION 1 - TOP HEADER */
+
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
-    padding: 40px 70px;
-    background-color: #f5f7fa;
-    color: #1f2937;
-    font-family: Arial, sans-serif;
+    background: #0d1b2a;
+    color: #f5f7fa;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
 }
 
-h1 {
+body > h1 {
     margin: 0;
-    font-size: 42px;
+    padding: 24px 60px 0 60px;
+    background: #071525;
+    color: #ffffff;
+    font-size: 38px;
     font-weight: 700;
     letter-spacing: 1px;
+    line-height: 1.1;
 }
 
-.btn-login,
-.btn-signup {
-    display: inline-block;
-    margin-top: 18px;
-    margin-right: 10px;
-    padding: 10px 20px;
+body > h1::after {
+    content: "Your personalised fitness companion";
+    display: block;
+    margin-top: 8px;
+    padding-bottom: 24px;
+    color: #b8c4d3;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+body > a {
+    position: relative;
+    z-index: 2;
+    float: right;
+    top: -70px;
+    margin-right: 60px;
+    margin-left: -45px;
+    padding: 14px 28px;
     border-radius: 6px;
+    color: #ffffff;
     text-decoration: none;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
+    text-align: center;
 }
 
-.btn-login {
-    background-color: #2563eb;
-    color: white;
+body > a.btn-login {
+    background: #1769e0;
 }
 
-.btn-signup {
-    background-color: #e5e7eb;
-    color: #1f2937;
+body > a.btn-signup {
+    margin-right: 60px;
+    background: #4caf2f;
 }
 
-.btn-login:hover,
-.btn-signup:hover {
+body > a:hover {
     opacity: 0.9;
 }
 
-/* ===========================CALORIE CALCULATOR STYLING ========================*/
-
-h2 {
-    margin-top: 45px;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: #111827;
-}
-
-#calorie-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 14px 12px;
-    max-width: 900px;
-    padding: 28px;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-#calorie-form br {
-    display: none;
-}
-
-#calorie-form label {
-    flex: 0 0 250px;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-#calorie-form select,
-#calorie-form input {
-    flex: 1 1 300px;
-    max-width: 360px;
-    min-height: 38px;
-    box-sizing: border-box;
-    padding: 8px 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background-color: white;
-    color: #1f2937;
-    font-size: 14px;
-}
-
-#calorie-form button {
-    flex-basis: 100%;
-    width: fit-content;
-    margin-top: 8px;
-    padding: 11px 22px;
-    border: none;
-    border-radius: 6px;
-    background-color: #2563eb;
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-#calorie-form button:hover {
-    background-color: #1d4ed8;
-}
-
-#calorie-result {
-    margin-top: 14px;
-    margin-bottom: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #374151;
-}
