@@ -1,452 +1,180 @@
-/* =========================================
-   WORKOUT GENERATOR - HOMEPAGE
-   ========================================= */
-
-/* =========================================
-   PAGE AND BACKGROUND
-   ========================================= */
-
-   * {
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    background: #0b1a2a;
-}
-
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: #0b1a2a;
-    color: #f5f7fa;
+    background-color: #0f1923;
+    color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Header */
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
 
-/* =========================================
-   TOP HEADER AND TITLE
-   ========================================= */
-
-body > h1 {
-    position: relative;
-    margin: 0;
-    padding: 24px 84px 23px 84px;
-    background: #061525;
-    color: #ffffff;
-    font-size: 38px;
+.site-header h1 {
+    font-size: 26px;
     font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.5px;
 }
 
-body > h1::after {
-    content: "Your personalised fitness companion";
-    display: block;
-    margin-top: 10px;
-    color: #b7c4d3;
-    font-size: 17px;
-    font-weight: 400;
-    letter-spacing: 0;
+.header-buttons {
+    display: flex;
+    gap: 12px;
 }
 
-
-/* =========================================
-   LOGIN AND SIGN UP BUTTONS
-   ========================================= */
-
-body > a {
-    position: absolute;
-    top: 27px;
-    z-index: 10;
-    display: block;
-    width: 107px;
-    height: 48px;
-    padding: 15px 10px;
+.btn-login {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    padding: 10px 22px;
+    border: none;
     border-radius: 6px;
-    color: #ffffff;
     text-decoration: none;
-    text-align: center;
-    font-size: 14px;
+}
+
+.btn-signup {
+    background-color: #6b8a3d !important;
+    color: #ffffff !important;
     font-weight: 700;
-}
-
-body > a[href="/login"] {
-    right: 191px;
-    background: #1769e0;
-}
-
-body > a[href="/signup"] {
-    right: 60px;
-    background: #4caf2f;
-}
-
-body > a:hover {
-    opacity: 0.9;
-}
-
-
-/* =========================================
-   MAIN SECTION HEADINGS
-   ========================================= */
-
-body > h2 {
-    width: 1230px;
-    max-width: calc(100% - 80px);
-    margin-left: auto;
-    margin-right: auto;
-    color: #ffffff;
-    font-size: 27px;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-body > h2:first-of-type {
-    margin-top: 34px;
-    margin-bottom: 17px;
-}
-
-body > h2:nth-of-type(2) {
-    margin-top: 27px;
-    margin-bottom: 16px;
-}
-
-
-/* =========================================
-   CALORIE CALCULATOR BOX
-   ========================================= */
-
-#calorie-form {
-    width: 1230px;
-    max-width: calc(100% - 80px);
-    margin: 0 auto;
-    padding: 27px 29px 27px 29px;
-    background: #17273a;
-    border: 1px solid #2b4056;
-    border-radius: 8px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 30px;
-    row-gap: 16px;
-}
-
-
-/* =========================================
-   CALORIE CALCULATOR LABELS
-   ========================================= */
-
-#calorie-form label {
-    display: block;
-    margin: 0 0 8px 0;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-
-/* =========================================
-   CALORIE CALCULATOR INPUTS
-   ========================================= */
-
-#calorie-form select,
-#calorie-form input {
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    border: 1px solid #526579;
-    border-radius: 5px;
-    outline: none;
-    background: #0d1824;
-    color: #ffffff;
-    font-size: 15px;
-}
-
-#calorie-form select:focus,
-#calorie-form input:focus {
-    border-color: #3d80e8;
-}
-
-
-/* =========================================
-   CALORIE ACTIVITY LEVEL
-   ========================================= */
-
-#calorie-form label[for="activity_level"] {
-    grid-column: 1 / 4;
-}
-
-#calorie-form #activity_level {
-    grid-column: 1 / 4;
-}
-
-
-/* =========================================
-   CALORIE WEIGHT, HEIGHT AND AGE
-   ========================================= */
-
-#calorie-form label[for="weight"],
-#calorie-form #weight {
-    grid-column: 1;
-}
-
-#calorie-form label[for="height"],
-#calorie-form #height {
-    grid-column: 2;
-}
-
-#calorie-form label[for="age"],
-#calorie-form #age {
-    grid-column: 3;
-}
-
-
-/* =========================================
-   CALORIE SEX SELECTOR
-   ========================================= */
-
-#calorie-form label[for="sex"],
-#calorie-form #sex {
-    grid-column: 1;
-}
-
-
-/* =========================================
-   CALORIE SUBMIT BUTTON
-   ========================================= */
-
-#calorie-form button {
-    grid-column: 2;
-    width: 100%;
-    height: 44px;
-    align-self: end;
+    padding: 10px 22px;
     border: none;
-    border-radius: 5px;
-    background: #4caf2f;
-    color: #ffffff;
-    font-size: 15px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+/* Main + Cards */
+main {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 10px 40px 40px;
+}
+
+.card {
+    background-color: #1a2332;
+    border: 1px solid #2a3a4a;
+    border-radius: 8px;
+    padding: 25px 30px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 22px;
     font-weight: 700;
-    cursor: pointer;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2a3a4a;
+    padding-bottom: 12px;
 }
 
-#calorie-form button:hover {
-    background: #429b2a;
+/* Labels */
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
 }
 
+/* Inputs + Selects: BLACK */
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: #000000 !important;
+    border: 1px solid #3a4a5a;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 14px;
+    appearance: auto;
+}
 
-/* =========================================
-   CALORIE RESULT
-   ========================================= */
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
 
+/* 3-column row */
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+/* Info text */
+.info-text {
+    background-color: #1c2b3a;
+    border: 1px solid #2a4a5a;
+    color: #a0b8d0;
+    border-radius: 4px;
+    padding: 12px 15px;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+/* Submit buttons */
+.submit-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #428a3d !important;
+    border-color: #428a3d !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    padding: 10px 35px;
+    font-size: 13px;
+    text-transform: uppercase;
+    border-radius: 4px;
+}
+
+.btn-primary:hover {
+    background-color: #428a3d !important;
+}
+
+/* Calorie result */
 #calorie-result {
-    width: 1230px;
-    max-width: calc(100% - 80px);
-    margin: 0 auto;
-    padding: 16px 29px;
-    border-left: 1px solid #2b4056;
-    border-right: 1px solid #2b4056;
-    border-bottom: 1px solid #2b4056;
-    border-radius: 0 0 8px 8px;
-    background: #17273a;
-    color: #ffffff;
     text-align: center;
-    font-size: 16px;
-}
-
-
-/* =========================================
-   WORKOUT INFORMATION MESSAGE
-   ========================================= */
-
-body > p {
-    width: 1230px;
-    max-width: calc(100% - 80px);
-    margin: 0 auto 15px auto;
-    padding: 13px 17px;
-    border: 1px solid #315779;
-    border-radius: 5px;
-    background: #17273a;
-    color: #cbd6e2;
-    font-size: 15px;
-    line-height: 1.5;
-}
-
-
-/* =========================================
-   WORKOUT GENERATOR BOX
-   ========================================= */
-
-body > form[action="/generate"] {
-    width: 1230px;
-    max-width: calc(100% - 80px);
-    margin: 0 auto 45px auto;
-    padding: 27px 29px 28px 29px;
-    background: #17273a;
-    border: 1px solid #2b4056;
-    border-radius: 8px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 30px;
-    row-gap: 17px;
-}
-
-
-/* =========================================
-   WORKOUT GENERATOR LABELS
-   ========================================= */
-
-body > form[action="/generate"] label {
-    display: block;
-    margin: 0 0 8px 0;
+    margin-top: 15px;
+    font-size: 13px;
     color: #ffffff;
-    font-size: 14px;
-    font-weight: 500;
+}
+
+#calorie-result span {
+    color: #6b8a3d;
+    font-weight: bold;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #5a6a7a;
+    font-size: 12px;
 }
 
 
-/* =========================================
-   WORKOUT GENERATOR SELECT BOXES
-   ========================================= */
-
-body > form[action="/generate"] select {
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    border: 1px solid #526579;
-    border-radius: 5px;
-    outline: none;
-    background: #0d1824;
-    color: #ffffff;
-    font-size: 15px;
+/* Workout submit button: dark blue */
+.card:nth-child(2) .btn-primary {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
 }
 
-body > form[action="/generate"] select:focus {
-    border-color: #3d80e8;
+.card:nth-child(2) .btn-primary:hover {
+    background-color: #1e3a8a !important;
 }
 
-
-/* =========================================
-   WORKOUT GOAL
-   ========================================= */
-
-body > form[action="/generate"] label[for="workout_goal"] {
-    grid-column: 1 / 4;
+/* Widen cards to fix alignment */
+main {
+    max-width: 950px;
 }
 
-body > form[action="/generate"] #workout_goal {
-    grid-column: 1 / 4;
-}
-
-
-/* =========================================
-   WORKOUT DAYS, EXPERIENCE AND LENGTH
-   ========================================= */
-
-body > form[action="/generate"] label[for="workout_days"],
-body > form[action="/generate"] #workout_days {
-    grid-column: 1;
-}
-
-body > form[action="/generate"] label[for="experience_level"],
-body > form[action="/generate"] #experience_level {
-    grid-column: 2;
-}
-
-body > form[action="/generate"] label[for="workout_length"],
-body > form[action="/generate"] #workout_length {
-    grid-column: 3;
-}
-
-
-/* =========================================
-   WORKOUT SUBMIT BUTTON
-   ========================================= */
-
-body > form[action="/generate"] button {
-    grid-column: 2;
-    width: 100%;
-    height: 44px;
-    border: none;
-    border-radius: 5px;
-    background: #1769e0;
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-body > form[action="/generate"] button:hover {
-    background: #125bc7;
-}
-
-
-/* =========================================
-   REMOVE DEFAULT LINE BREAK SPACING
-   ========================================= */
-
-#calorie-form br,
-body > form[action="/generate"] br {
-    display: none;
-}
-
-
-/* =========================================
-   DESKTOP SIZING
-   ========================================= */
-
-@media (min-width: 1400px) {
-    body > h1 {
-        padding-left: 84px;
-        padding-right: 84px;
-    }
-}
-
-
-/* =========================================
-   TABLET AND SMALL SCREEN SUPPORT
-   ========================================= */
-
-@media (max-width: 900px) {
-
-    body > h1 {
-        padding: 22px 30px;
-        font-size: 32px;
-    }
-
-    body > a {
-        top: 22px;
-        width: 90px;
-        height: 42px;
-        padding-top: 13px;
-        font-size: 12px;
-    }
-
-    body > a[href="/login"] {
-        right: 135px;
-    }
-
-    body > a[href="/signup"] {
-        right: 30px;
-    }
-
-    body > h2,
-    body > p,
-    #calorie-form,
-    #calorie-result,
-    body > form[action="/generate"] {
-        max-width: calc(100% - 40px);
-    }
-
-    #calorie-form,
-    body > form[action="/generate"] {
-        grid-template-columns: 1fr;
-    }
-
-    #calorie-form label,
-    #calorie-form select,
-    #calorie-form input,
-    #calorie-form button,
-    body > form[action="/generate"] label,
-    body > form[action="/generate"] select,
-    body > form[action="/generate"] button {
-        grid-column: 1 !important;
-    }
+.card {
+    padding: 30px 40px;
 }

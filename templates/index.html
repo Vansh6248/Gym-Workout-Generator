@@ -6,123 +6,120 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1> WORKOUT GENERATOR </h1>
-    <a href="/login" class="btn btn-login">LOG IN</a>
-    <a href="/signup" class="btn btn-signup">SIGN UP</a>
+    <header class="site-header">
+        <h1> WORKOUT GENERATOR </h1>
+        <div class="header-buttons">
+            <a href="/login" class="btn btn-login">LOG IN</a>
+            <a href="/signup" class="btn btn-signup">SIGN UP</a>
+        </div>
+    </header>
 
-    <h2> Calorie calculator: </h2>
-    <form id="calorie-form">
+    <main>
+        <div class="card">
+            <h2> Calorie calculator </h2>
+            <form id="calorie-form">
+                <label for="activity_level">Choose activity level: </label>
+                <select id="activity_level" name="activity_level">
+                    <option value="sedentary">Sedentary: Little to no exercise</option>
+                    <option value="light">Lightly Active: Exercise 1-3 times/week</option>
+                    <option value="moderate">Moderately Active: exercise 4-5 times/week</option>
+                    <option value="active">Active: daily exercise or intense exercise 3-4 times/week</option>
+                    <option value="very_active">Very Active: intense exercise 6-7 times/week</option>
+                    <option value="extra_active">Extra Active: intense exercise daily or physical labour job</option>
+                </select>
+                <br><br>
+                <div class="form-row-3">
+                    <div class="input-group">
+                        <label for="weight">Enter your weight in kg (45-140kg):</label>
+                        <input type="number" id="weight" name="weight" min="45" max="140" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="height">Enter your height in cm (150-200cm):</label>
+                        <input type="number" id="height" name="height" min="150" max="200" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="age">Enter your age (19-78):</label>
+                        <input type="number" id="age" name="age" min="19" max="78" required>
+                    </div>
+                </div>
+                <label for="sex">Choose sex</label>
+                <select id="sex" name="sex">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <br><br>
+                <div class="submit-container">
+                    <button type="submit" class="btn btn-primary">Submit Calorie Preferences</button>
+                </div>
+            </form>
+            <p id="calorie-result"></p>
+        </div>
 
-        <label for="activity_level">Choose activity level: </label>
-        <select id="activity_level" name="activity_level">
-            <option value="sedentary">Sedentary: Little to no exercise</option>
-            <option value="light">Lightly Active: Exercise 1-3 times/week</option>
-            <option value="moderate">Moderately Active: exercise 4-5 times/week</option>
-            <option value="active">Active: daily exercise or intense exercise 3-4 times/week</option>
-            <option value="very_active">Very Active: intense exercise 6-7 times/week</option>
-            <option value="extra_active">Extra Active: intense exercise daily or physical labour job</option>
-        </select>
+        <div class="card">
+            <h2> Workout generator </h2>
+            <p class="info-text">
+                * If you select "Lose Weight", your workout will include cardio exercises,
+                which may increase the duration of each session due to the increased
+                duration of the cardio exercises.
+            </p>
+            <form action="/generate" method="POST">
+                <label for="workout_goal">Select your workout goal:</label>
+                <select id="workout_goal" name="workout_goal">
+                    <option value="lose_weight">Lose Weight</option>
+                    <option value="gain_muscle">Gain Muscle</option>
+                </select>
+                <br><br>
+                <div class="form-row-3">
+                    <div class="input-group">
+                        <label for="workout_days">Select number of workout days per week:</label>
+                        <select id="workout_days" name="workout_days">
+                            <option value="1">1 day</option>
+                            <option value="2">2 days</option>
+                            <option value="3">3 days</option>
+                            <option value="4">4 days</option>
+                            <option value="5">5 days</option>
+                            <option value="6">6 days</option>
+                            <option value="7">7 days</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="experience_level">Select your experience level:</label>
+                        <select id="experience_level" name="experience_level">
+                            <option value="beginner_intermediate">Little to no experience</option>
+                            <option value="adept">I already train</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="workout_length">Select your workout length:</label>
+                        <select id="workout_length" name="workout_length">
+                            <option value="short">Short (20-30 minutes)</option>
+                            <option value="amedium">Medium (30-45 minutes)</option>
+                            <option value="long">Long (45+ minutes)</option>
+                        </select>
+                    </div>
+                </div>
+                <br><br>
+                <div class="submit-container">
+                    <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
+                </div>
+            </form>
+        </div>
+    </main>
 
-        <br><br>
-
-        <label for="weight">Enter your weight in kg (45-140kg):</label>
-        <input type="number" id="weight" name="weight" min="45" max="140" required>
-
-        <br><br>
-
-        <label for="sex">Choose sex</label>
-        <select id="sex" name="sex">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select>
-
-        <br><br>
-
-        <label for="height">Enter your height in cm (150-200cm):</label>
-        <input type="number" id="height" name="height" min="150" max="200" required>
-
-        <br><br>
-
-        <label for="age">Enter your age (19-78):</label>
-        <input type="number" id="age" name="age" min="19" max="78" required>
-
-        <br><br>
-
-        <button type="submit" class="btn btn-primary">
-            Submit Calorie Preferences
-        </button>
-
-    </form>
-
-    <!-- =========== LINE 57-77 IS AI GENERATED. ALL OF THE JAVASCRIPT WITHIN INDEX.HTML IS AI GENERATED  =========== -->
-
-    <p id="calorie-result"></p>
+<!--=============== ALL JAVASCRIPT IS AI GENERATED =================-->
 
     <script>
         document.getElementById("calorie-form").addEventListener("submit", async function(event) {
             event.preventDefault();
-
             const formData = new FormData(this);
-
             const response = await fetch("/calculate-calories", {
                 method: "POST",
                 body: formData
             });
-
             const data = await response.json();
-
-            document.getElementById("calorie-result").textContent =
-                "Estimated daily caloric intake (maintainence): " + data.calories + " KCAL";
-                });
+            document.getElementById("calorie-result").innerHTML =
+                "Estimated daily caloric intake: <span>" + data.calories + " KCAL</span>";
+        });
     </script>
-
-    <!-- ================ END OF AI GENERATED CODE ================= -->
-
-    <br><br>
-    <h2> Workout generator: </h2>
-    <p>
-        * If you select "Lose Weight", your workout will include cardio exercises,
-        which may increase the duration of each session due to the increased
-        duration of the cardio exercises.
-    </p>
-
-    <form action="/generate" method="POST">
-        <label for="workout_goal">Select your workout goal:</label>
-        <select id="workout_goal" name="workout_goal">
-            <option value="lose_weight">Lose Weight</option>
-            <option value="gain_muscle">Gain Muscle</option>
-        </select>
-
-        <br><br>
-
-        <label for="workout_days">Select number of workout days per week:</label>
-        <select id="workout_days" name="workout_days">
-            <option value="1">1 day</option>
-            <option value="2">2 days</option>
-            <option value="3">3 days</option>
-            <option value="4">4 days</option>
-            <option value="5">5 days</option>
-            <option value="6">6 days</option>
-            <option value="7">7 days</option>
-        </select>
-
-        <br><br>
-
-        <label for="experience_level">Select your experience level:</label>
-        <select id="experience_level" name="experience_level">
-            <option value="beginner_intermediate">Little to no experience</option>
-            <option value="adept">I already train</option>
-        </select>
-        <br><br>
-        <label for="workout_length">Select your workout length:</label>
-        <select id="workout_length" name="workout_length">
-            <option value="short">Short (20-30 minutes)</option>
-            <option value="amedium">Medium (30-45 minutes)</option>
-            <option value="long">Long (45+ minutes)</option>
-        </select>
-        <br><br>
-        <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
-    </form>
-    <br><br>
 </body>
 </html>
