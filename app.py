@@ -24,7 +24,6 @@ def generate():
         workout_length=workout_length
     )
 
-
 @app.route("/calculate-calories", methods=["POST"])
 def calculate_calories_route():
     weight = float(request.form.get("weight"))
