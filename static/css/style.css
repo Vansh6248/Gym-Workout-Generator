@@ -178,3 +178,235 @@ main {
 .card {
     padding: 30px 40px;
 }
+
+
+
+
+/* ==============================
+   AUTH PAGES (Login & Signup)
+   ============================== */
+
+   .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    background-color: #1e2634;
+    border: 1px solid #2a3441;
+    border-radius: 8px;
+    padding: 40px 50px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-card h1 {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-card label {
+    color: #ffffff;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.auth-card input[type="text"],
+.auth-card input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: #000000;
+    border: 1px solid #2a3441;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.auth-card input[type="text"]:focus,
+.auth-card input[type="password"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.auth-card input::placeholder {
+    color: #6b7b8b;
+}
+
+/* Checkbox group */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #3b82f6;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+/* Blue button (Login) */
+.btn-blue {
+    width: 100%;
+    padding: 14px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.btn-blue:hover {
+    background-color: #2563eb;
+}
+
+/* Green button (Signup) */
+.btn-green {
+    width: 100%;
+    padding: 14px;
+    background-color: #6b8a3d;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.btn-green:hover {
+    background-color: #5a7a32;
+}
+
+/* Divider (OR) */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #6b7b8b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #3a4a5a;
+}
+
+.divider::before {
+    margin-right: 12px;
+}
+
+.divider::after {
+    margin-left: 12px;
+}
+
+/* Links */
+.auth-card p {
+    color: #9ca3af;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.auth-card p a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.auth-card p a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    color: #3b82f6;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
+
+/* Password input wrapper */
+.input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 14px 50px 14px 16px;
+    background-color: #000000;
+    border: 1px solid #2a3441;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.input-wrapper input::placeholder {
+    color: #6b7b8b;
+}
+
+/* Eye icon button */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 38%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye-icon {
+    width: 18px;
+    height: 18px;
+    color: #6b7b8b;
+    transition: color 0.2s;
+}
+
+.eye-icon:hover {
+    color: #ffffff;
+}
+
+.eye-icon.hidden {
+    display: none;
+}

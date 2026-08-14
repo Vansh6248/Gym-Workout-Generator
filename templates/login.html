@@ -16,7 +16,15 @@
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="remember" name="remember">
@@ -30,8 +38,20 @@
 
             <p>Don't have an account? <a href="/signup">Sign up here.</a></p>
 
-            <a href="{{ url_for('home') }}" class="back-link">Return to Homepage</a>
+            <a href="{{ url_for('home') }}" class="back-link">&larr; Return to Homepage</a>
         </div>
     </div>
+
+    
+  <script>
+      function togglePassword(fieldId) {
+          const field = document.getElementById(fieldId);
+          if (field.type === 'password') {
+              field.type = 'text';
+          } else {
+              field.type = 'password';
+          }
+      }
+  </script>
 </body>
 </html>
