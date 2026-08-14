@@ -14,15 +14,16 @@ def generate():
     experience = request.form.get("experience_level")
     days = int(request.form.get("workout_days"))
     workout_length = request.form.get("workout_length")
-
-    workout = generate_workout(
-        goal,
-        experience,
-        days,
-        workout_length
+    workout = generate_workout(goal, experience, days, workout_length)
+    return render_template(
+        "workout.html",
+        workout=workout,
+        goal=goal,
+        experience=experience,
+        days=days,
+        workout_length=workout_length
     )
 
-    return render_template("workout.html", workout=workout)
 
 @app.route("/calculate-calories", methods=["POST"])
 def calculate_calories_route():
