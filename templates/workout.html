@@ -1,40 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Your Workout</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Workout Plan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Your Workout:</h1>
-    <a href="/" class="btn">HOME</a>
-    {% for day, session in workout.items() %}
-        <h2>{{ day }}</h2>
-        {% for exercise in session["exercises"] %}
-            {% if exercise["cardio"] %}
-                <p>
-                    <strong>{{ exercise["name"] }}</strong>
-                    - Cardio - {{ exercise["minutes"] }} minutes
-                </p>
+
+<!-- ============ AI GENERATED CONTENT: LINES 12-42 ===================-->
+
+
+{% macro split_short(session) %}
+{% set lower = ['Quads', 'Hamstrings', 'Glutes', 'Calves'] %}
+{% set is_lower = namespace(v=False) %}
+{% set has_back = namespace(v=False) %}
+{% set has_chest = namespace(v=False) %}
+{% for ex in session["exercises"] %}
+    {% if not ex["cardio"] %}
+        {% if ex["muscle"] in lower %}{% set is_lower.v = True %}{% endif %}
+        {% if ex["muscle"] in ['Back', 'Biceps'] %}{% set has_back.v = True %}{% endif %}
+        {% if ex["muscle"] == 'Chest' %}{% set has_chest.v = True %}{% endif %}
+    {% endif %}
+{% endfor %}
+{% if is_lower.v and (has_back.v or has_chest.v) %}FULL BODY
+{% elif is_lower.v %}LOWER
+{% elif has_back.v and has_chest.v %}UPPER
+{% elif has_back.v %}PULL
+{% elif has_chest.v %}PUSH
+{% else %}WORKOUT{% endif %}
+{% endmacro %}
+
+{% set week_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+{% set all_splits = [] %}
+{% for day, session in workout.items() %}
+    {% set s = split_short(session) %}
+    {% if s not in all_splits %}{% set _ = all_splits.append(s) %}{% endif %}
+{% endfor %}
+{% set first_day = workout.keys() | list | first %}
+
+<!-- =============== END OF AI GENERATED CONTENT =========================-->
+
+<div class="workout-page">
+
+    <header class="workout-header">
+        <h1 class="workout-title">YOUR WORKOUT PLAN: <span>{{ all_splits | join(' / ') }}</span></h1>
+        <div class="workout-actions">
+            <button type="button" class="btn-pdf">Save As PDF</button>
+            <a href="/" class="btn-back">&larr; Back to Home</a>
+        </div>
+    </header>
+
+    <div class="summary-card">
+        <div class="summary-item">
+            <span class="summary-label">GOAL</span>
+            <span class="summary-value">
+                {% if goal == 'lose_weight' %}Lose Weight{% elif goal == 'gain_muscle' %}Gain Muscle{% else %}{{ goal | default('') }}{% endif %}
+            </span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">DAYS PER WEEK</span>
+            <span class="summary-value">{{ days | default('') }} Days</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">EXPERIENCE</span>
+            <span class="summary-value">
+                {% if experience == 'beginner_intermediate' %}I have never trained{% elif experience == 'already_training' %}I already train{% else %}{{ experience | default('') }}{% endif %}
+            </span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">WORKOUT LENGTH</span>
+            <span class="summary-value">
+                {% if workout_length == 'short' %}Short (30 min){% elif workout_length == 'medium' %}Medium (30-45 min){% else %}Long (45+ min){% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="day-tabs">
+        {% for day in week_days %}
+            {% if day in workout %}
+                <button type="button" class="day-tab {% if day == first_day %}active{% endif %}" id="tab-{{ day }}" onclick="selectDay('{{ day }}')">{{ day | upper }}</button>
             {% else %}
-                <p>
-                    <strong>{{ exercise["name"] }}</strong>
-                    - {{ exercise["muscle"] }}
-                    - {{ exercise["sets"] }} sets
-                    x {{ exercise["reps"] }} reps
-                    - {{ exercise["minutes"] }} minutes
-                </p>
+                <span class="day-tab rest">{{ day | upper }}</span>
             {% endif %}
         {% endfor %}
-        <p>
-            <strong>Estimated workout time:</strong>
-            {{ session["total_time"] }} minutes
-        </p>
+    </div>
+
+<!-- =============== AI GENERATED CONTENT: LINES 90 - 160 ======================================-->
+
+    {% for day, session in workout.items() %}
+    <div class="day-panel" id="panel-{{ day }}" {% if day != first_day %}style="display:none;"{% endif %}>
+        <div class="day-info">
+            <div class="day-info-item">
+                <span class="summary-label">DAY</span>
+                <span class="day-value">{{ split_short(session) | title }}</span>
+            </div>
+            <div class="day-info-item">
+                <span class="summary-label">FOCUS</span>
+                <span class="day-value">
+                    {% set muscles = [] %}
+                    {% for ex in session["exercises"] %}
+                        {% if not ex["cardio"] and ex["muscle"] not in muscles %}{% set _ = muscles.append(ex["muscle"]) %}{% endif %}
+                    {% endfor %}
+                    {{ muscles | join(', ') }}
+                </span>
+            </div>
+        </div>
+
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>EXERCISE</th>
+                    <th>SETS</th>
+                    <th>REPS / DURATION</th>
+                    <th>TIME</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ex in session["exercises"] %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ ex["name"] }}</td>
+                    <td>{% if ex["sets"] is not none %}{{ ex["sets"] }}{% else %}&mdash;{% endif %}</td>
+                    <td>{% if ex["cardio"] %}{{ ex["minutes"] }} minutes{% else %}{{ ex["reps"] }} reps{% endif %}</td>
+                    <td>{{ ex["minutes"] }} min</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="estimated-time">
+            <span class="estimate-label">ESTIMATED WORKOUT TIME:</span>
+            <span class="estimate-value">{{ session["total_time"] }} minutes</span>
+        </div>
         {% if session["total_time_with_cardio"] != session["total_time"] %}
-            <p>
-                <strong>Estimated workout time (with cardio exercise):</strong>
-                {{ session["total_time_with_cardio"] }} minutes
-            </p>
+        <div class="estimated-time cardio">
+            <span class="estimate-label">ESTIMATED WORKOUT TIME (WITH CARDIO):</span>
+            <span class="estimate-value">{{ session["total_time_with_cardio"] }} minutes</span>
+        </div>
         {% endif %}
-        <p>Rest time per set: 1 minute</p>
+    </div>
     {% endfor %}
+
+    <div class="bottom-row">
+        <div class="bottom-card">
+            <h3 class="bottom-title">REST DAYS:</h3>
+            <p class="rest-text">No workouts scheduled on these days.</p>
+        </div>
+        <div class="bottom-card">
+            <h3 class="bottom-title">WEEKLY WORKOUT SCHEDULE:</h3>
+            <ul class="schedule-list">
+                {% for day, session in workout.items() %}
+                <li><span class="schedule-day">{{ day | upper }}:</span> <span class="schedule-split">{{ split_short(session) }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- END OF AI GENERATED CONTENT-->
+
+
+<!-- ================== AI GENERATED JAVASCRIPT: LINES 168-183-->
+<script>
+function selectDay(day) {
+    var panels = document.querySelectorAll('.day-panel');
+    for (var i = 0; i < panels.length; i++) { panels[i].style.display = 'none'; }
+    var panel = document.getElementById('panel-' + day);
+    if (panel) { panel.style.display = 'block'; }
+    var tabs = document.querySelectorAll('.day-tab');
+    for (var j = 0; j < tabs.length; j++) { tabs[j].classList.remove('active'); }
+    var tab = document.getElementById('tab-' + day);
+    if (tab) { tab.classList.add('active'); }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var first = document.querySelector('.day-tab.active');
+    if (first && first.id) { selectDay(first.id.replace('tab-', '')); }
+});
+</script>
 </body>
 </html>
