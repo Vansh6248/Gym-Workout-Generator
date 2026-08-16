@@ -11,7 +11,6 @@
 
 <!-- ============ AI GENERATED CONTENT: LINES 12-42 ===================-->
 
-
 {% macro split_short(session) %}
 {% set lower = ['Quads', 'Hamstrings', 'Glutes', 'Calves'] %}
 {% set is_lower = namespace(v=False) %}
@@ -66,8 +65,8 @@
         <div class="summary-item">
             <span class="summary-label">EXPERIENCE</span>
             <span class="summary-value">
-                {% if experience == 'beginner_intermediate' %}I have never trained{% elif experience == 'already_training' %}I already train{% else %}{{ experience | default('') }}{% endif %}
-            </span>
+                {% if experience == 'beginner_intermediate' %}I have never trained{% elif experience == 'adept' %}Adept{% else %}{{ experience | default('') | capitalize }}{% endif %}
+            </span>            
         </div>
         <div class="summary-item">
             <span class="summary-label">WORKOUT LENGTH</span>
@@ -147,8 +146,18 @@
     <div class="bottom-row">
         <div class="bottom-card">
             <h3 class="bottom-title">REST DAYS:</h3>
-            <p class="rest-text">No workouts scheduled on these days.</p>
-        </div>
+            <p class="rest-note">These are the days with no workout scheduled</p>
+            {% set rest_days = [] %}
+            {% for day in week_days %}
+                {% if day not in workout %}{% set _ = rest_days.append(day[:3]) %}{% endif %}
+            {% endfor %}
+            {% if rest_days %}
+            <p class="rest-days-list">{{ rest_days | join(', ') }}</p>
+            {% else %}
+            <p class="rest-days-list">You train every day of the week.</p>
+            {% endif %}
+        </div>        
+
         <div class="bottom-card">
             <h3 class="bottom-title">WEEKLY WORKOUT SCHEDULE:</h3>
             <ul class="schedule-list">
@@ -158,8 +167,7 @@
             </ul>
         </div>
     </div>
-
-</div>
+    
 
 
 <!-- END OF AI GENERATED CONTENT-->
