@@ -10,6 +10,11 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
+            {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
             <h1>LOGIN</h1>
             <form action="/login" method="post">
                 <label for="username">Username</label>
@@ -33,25 +38,20 @@
 
                 <button type="submit" class="btn btn-blue">LOG IN</button>
             </form>
-
             <div class="divider">OR</div>
-
             <p>Don't have an account? <a href="/signup">Sign up here.</a></p>
-
             <a href="{{ url_for('home') }}" class="back-link">&larr; Return to Homepage</a>
         </div>
     </div>
-
-    
-  <script>
-      function togglePassword(fieldId) {
-          const field = document.getElementById(fieldId);
-          if (field.type === 'password') {
-              field.type = 'text';
-          } else {
-              field.type = 'password';
-          }
-      }
-  </script>
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field.type === 'password') {
+                field.type = 'text';
+            } else {
+                field.type = 'password';
+            }
+        }
+    </script>
 </body>
 </html>
