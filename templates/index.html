@@ -8,12 +8,19 @@
 <body>
     <header class="site-header">
         <h1> WORKOUT GENERATOR </h1>
-        <div class="header-buttons">
-            <a href="/login" class="btn btn-login">LOG IN</a>
-            <a href="/signup" class="btn btn-signup">SIGN UP</a>
+        <div class="header-right">
+            {% if g.user %}
+                <span class="info-text">Logged in as {{ g.user['username'] }}</span>
+                <a href="/logout" class="btn btn-login">LOG OUT</a>
+            {% else %}
+                <span class="info-text">Login to save/edit workouts</span>
+                <div class="header-buttons">
+                    <a href="/login" class="btn btn-login">LOG IN</a>
+                    <a href="/signup" class="btn btn-signup">SIGN UP</a>
+                </div>
+            {% endif %}
         </div>
     </header>
-
     <main>
         <div class="card">
             <h2> Calorie calculator </h2>
@@ -54,7 +61,6 @@
             </form>
             <p id="calorie-result"></p>
         </div>
-
         <div class="card">
             <h2> Workout generator </h2>
             <p class="info-text">
@@ -105,9 +111,7 @@
             </form>
         </div>
     </main>
-
-<!--=============== ALL JAVASCRIPT IS AI GENERATED =================-->
-
+    <!--=============== ALL JAVASCRIPT IS AI GENERATED =================-->
     <script>
         document.getElementById("calorie-form").addEventListener("submit", async function(event) {
             event.preventDefault();

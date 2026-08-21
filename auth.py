@@ -4,7 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 DB_PATH = "accounts.db"
 
-
 def setup_auth(app):
     # Runs before every request: makes g.user available in all templates.
     @app.before_request
@@ -27,7 +26,7 @@ def setup_auth(app):
             confirm_password = request.form.get("confirm_password")
 
             if password != confirm_password:
-                flash("Passwords do not match.")
+                flash("Passwords do not match.", "error")
                 return redirect(url_for("signup"))
 
             db = sqlite3.connect(DB_PATH)
@@ -37,9 +36,10 @@ def setup_auth(app):
             ).fetchone()
             if existing:
                 db.close()
-                flash("That username is already taken.")
+                flash("That username is already taken.", "error")
                 return redirect(url_for("signup"))
 
+            # Using pbkdf2:sha256 to support Python 3.8
             db.execute(
                 "INSERT INTO users (username, password_hash) VALUES (?, ?)",
                 (username, generate_password_hash(password, method="pbkdf2:sha256")),
@@ -65,11 +65,11 @@ def setup_auth(app):
             db.close()
 
             if user is None or not check_password_hash(user["password_hash"], password):
-                flash("Invalid username or password.")
+                flash("Invalid username or password.", "error")
                 return redirect(url_for("login"))
 
+            session.clear()
             session["user_id"] = user["id"]
-            flash(f"Welcome back, {user['username']}!")
             return redirect(url_for("home"))
 
         return render_template("login.html")
@@ -79,15 +79,3 @@ def setup_auth(app):
         session.clear()
         flash("You have been logged out.")
         return redirect(url_for("home"))
-
-    # Creates accounts.db + the users table on startup. No manual setup needed.
-    db = sqlite3.connect(DB_PATH)
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password_hash TEXT NOT NULL
-        )
-    """)
-    db.commit()
-    db.close()
