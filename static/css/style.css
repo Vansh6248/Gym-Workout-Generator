@@ -23,6 +23,12 @@ body {
     font-weight: 700;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .header-buttons {
     display: flex;
     gap: 12px;
@@ -159,7 +165,6 @@ footer {
     font-size: 12px;
 }
 
-
 /* Workout submit button: dark blue */
 .card:nth-child(2) .btn-primary {
     background-color: #1e40af !important;
@@ -179,14 +184,11 @@ main {
     padding: 30px 40px;
 }
 
-
-
-
 /* ==============================
    AUTH PAGES (Login & Signup)
    ============================== */
 
-   .auth-container {
+.auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -350,11 +352,6 @@ main {
     text-decoration: underline;
 }
 
-
-
-
-
-
 /* Password input wrapper */
 .input-wrapper {
     position: relative;
@@ -414,7 +411,7 @@ main {
 /* ==============================
    WORKOUT GENERATION PAGE
    ============================== */
-   .workout-page {
+.workout-page {
     max-width: 1000px;
     margin: 0 auto;
     padding: 30px 40px 50px;
@@ -424,7 +421,6 @@ main {
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
 }
-
 
 .workout-header {
     display: flex;

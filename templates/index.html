@@ -10,10 +10,10 @@
         <h1> WORKOUT GENERATOR </h1>
         <div class="header-right">
             {% if g.user %}
-                <span class="info-text">Logged in as {{ g.user['username'] }}</span>
+                <span class="info-text" style="margin-bottom: 0; display: inline-block;">Logged in as {{ g.user['username'] }}</span>
                 <a href="/logout" class="btn btn-login">LOG OUT</a>
             {% else %}
-                <span class="info-text">Login to save/edit workouts</span>
+                <span class="info-text" style="margin-bottom: 0; display: inline-block;">Login to save/edit workouts</span>
                 <div class="header-buttons">
                     <a href="/login" class="btn btn-login">LOG IN</a>
                     <a href="/signup" class="btn btn-signup">SIGN UP</a>
@@ -49,80 +49,90 @@
                         <input type="number" id="age" name="age" min="19" max="78" required>
                     </div>
                 </div>
-                <label for="sex">Choose sex</label>
+                <label for="sex">Choose sex: </label>
                 <select id="sex" name="sex">
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select>
-                <br><br>
                 <div class="submit-container">
-                    <button type="submit" class="btn btn-primary">Submit Calorie Preferences</button>
+                    <button type="submit" class="btn btn-primary">CALCULATE CALORIES</button>
                 </div>
             </form>
-            <p id="calorie-result"></p>
+            <div id="calorie-result"></div>
         </div>
+
         <div class="card">
-            <h2> Workout generator </h2>
-            <p class="info-text">
-                * If you select "Lose Weight", your workout will include cardio exercises,
-                which may increase the duration of each session due to the increased
-                duration of the cardio exercises.
-            </p>
-            <form action="/generate" method="POST">
-                <label for="workout_goal">Select your workout goal:</label>
-                <select id="workout_goal" name="workout_goal">
-                    <option value="lose_weight">Lose Weight</option>
-                    <option value="gain_muscle">Gain Muscle</option>
+            <h2> Workout Generator </h2>
+            <form id="workout-form" action="/generate_workout" method="POST">
+                <label for="experience">Experience Level:</label>
+                <select id="experience" name="experience" required>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
                 </select>
                 <br><br>
-                <div class="form-row-3">
-                    <div class="input-group">
-                        <label for="workout_days">Select number of workout days per week:</label>
-                        <select id="workout_days" name="workout_days">
-                            <option value="1">1 day</option>
-                            <option value="2">2 days</option>
-                            <option value="3">3 days</option>
-                            <option value="4">4 days</option>
-                            <option value="5">5 days</option>
-                            <option value="6">6 days</option>
-                            <option value="7">7 days</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="experience_level">Select your experience level:</label>
-                        <select id="experience_level" name="experience_level">
-                            <option value="beginner_intermediate">Little to no experience</option>
-                            <option value="adept">I already train</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="workout_length">Select your workout length:</label>
-                        <select id="workout_length" name="workout_length">
-                            <option value="short">Short (30 minutes)</option>
-                            <option value="medium">Medium (30-45 minutes)</option>
-                            <option value="long">Long (45+ minutes)</option>
-                        </select>
-                    </div>
+                <label for="days">How many days per week will you train? (2-6):</label>
+                <select id="days" name="days" required>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <br><br>
+                <label for="duration">How long do you want each session to be? (30-120 minutes):</label>
+                <input type="number" id="duration" name="duration" min="30" max="120" required>
+                <div class="info-text">
+                    If you select <b>lose weight</b>, your workout will include cardio at the end of each session.
                 </div>
+                <label for="goal">What is your goal?</label>
+                <select id="goal" name="goal" required>
+                    <option value="lose weight">Lose Weight</option>
+                    <option value="gain weight">Gain Weight</option>
+                    <option value="maintain weight">Maintain Weight</option>
+                </select>
                 <br><br>
                 <div class="submit-container">
-                    <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
+                    <button type="submit" class="btn btn-primary">GENERATE WORKOUT</button>
                 </div>
             </form>
         </div>
     </main>
-    <!--=============== ALL JAVASCRIPT IS AI GENERATED =================-->
+
+    <footer>
+        &copy; 2025 Workout Generator. All rights reserved.
+    </footer>
+
     <script>
-        document.getElementById("calorie-form").addEventListener("submit", async function(event) {
+        document.getElementById('calorie-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            const formData = new FormData(this);
-            const response = await fetch("/calculate-calories", {
-                method: "POST",
-                body: formData
-            });
-            const data = await response.json();
-            document.getElementById("calorie-result").innerHTML =
-                "Estimated daily caloric intake: <span>" + data.calories + " KCAL</span>";
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const age = parseInt(document.getElementById('age').value);
+            const sex = document.getElementById('sex').value;
+            const activityLevel = document.getElementById('activity_level').value;
+
+            const activityLevels = {
+                'sedentary': 1.2,
+                'light': 1.375,
+                'moderate': 1.55,
+                'active': 1.725,
+                'very_active': 1.9,
+                'extra_active': 2.1
+            };
+
+            const multiplier = activityLevels[activityLevel];
+            let bmr;
+
+            if (sex === 'male') {
+                bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+            } else {
+                bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+            }
+
+            const calories = Math.round(bmr * multiplier);
+            document.getElementById('calorie-result').innerHTML =
+                `Your estimated maintenance calories are: <span>${calories}</span> calories per day.`;
         });
     </script>
 </body>
