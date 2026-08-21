@@ -42,7 +42,7 @@ def setup_auth(app):
 
             db.execute(
                 "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-                (username, generate_password_hash(password)),
+                (username, generate_password_hash(password, method="pbkdf2:sha256")),
             )
             db.commit()
             db.close()
