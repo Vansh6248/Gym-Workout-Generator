@@ -11,6 +11,11 @@
         <div class="header-right">
             {% if g.user %}
                 <span class="info-text" style="margin-bottom: 0; display: inline-block;">Logged in as {{ g.user['username'] }}</span>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
                 <div class="settings-dropdown">
                     <button class="settings-btn" onclick="toggleSettings()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
@@ -19,7 +24,6 @@
                         </svg>
                     </button>
                     <div class="settings-menu" id="settingsMenu">
-                        <a href="#">Dark/Light UI</a>
                         <a href="#">Change Username</a>
                         <a href="#">Privacy Policy</a>
                         <a href="#">Terms of Service</a>
@@ -29,13 +33,18 @@
                 </div>
             {% else %}
                 <span class="info-text" style="margin-bottom: 0; display: inline-block;">Login to save/edit workouts</span>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
                 <div class="header-buttons">
                     <a href="/login" class="btn btn-login">LOG IN</a>
                     <a href="/signup" class="btn btn-signup">SIGN UP</a>
                 </div>
             {% endif %}
         </div>
-    </header>    
+    </header>
     <main>
         <div class="card">
             <h2> Calorie calculator </h2>
@@ -46,7 +55,7 @@
                     <option value="light">Lightly Active: Exercise 1-3 times/week</option>
                     <option value="moderate">Moderately Active: exercise 4-5 times/week</option>
                     <option value="active">Active: daily exercise or intense exercise 3-4 times/week</option>
-                    <option value="very_active">Very Active: intense exercise 6-7 times/week</option>
+                    <option value="very_active">Very Active: intense exercise 5-6 times/week</option>
                     <option value="extra_active">Extra Active: intense exercise daily or physical labour job</option>
                 </select>
                 <br><br>
@@ -80,8 +89,8 @@
             <h2> Workout generator </h2>
             <p class="info-text">
                 * If you select "Lose Weight", your workout will include cardio exercises,
-                which may increase the duration of each session due to the increased
-                duration of the cardio exercises.
+                  which may increase the duration of each session due to the increased
+                  duration of the cardio exercises.
             </p>
             <form action="/generate" method="POST">
                 <label for="workout_goal">Select your workout goal:</label>
@@ -107,7 +116,7 @@
                         <label for="experience_level">Select your experience level:</label>
                         <select id="experience_level" name="experience_level">
                             <option value="beginner_intermediate">Little to no experience</option>
-                            <option value="adept">I already train</option>
+                            <option value="adept">Experienced</option>
                         </select>
                     </div>
                     <div class="input-group">
@@ -127,20 +136,6 @@
         </div>
     </main>
     <script>
-        document.getElementById("calorie-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const response = await fetch("/calculate-calories", {
-                method: "POST",
-                body: formData
-            });
-            const data = await response.json();
-            document.getElementById("calorie-result").innerHTML =
-                "Estimated daily caloric intake: <span>" + data.calories + " KCAL</span>";
-        });
-    </script>
-
-    <script>
         function toggleSettings() {
             document.getElementById('settingsMenu').classList.toggle('show');
         }
@@ -152,6 +147,33 @@
             }
         });
     </script>
-    
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+    <script>
+        document.getElementById("calorie-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch("/calculate-calories", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById("calorie-result").innerHTML =
+                "Estimated Daily Caloric Intake: <span>" + data.calories + " KCAL</span>";
+        });
+    </script>
 </body>
 </html>

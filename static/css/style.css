@@ -23,14 +23,14 @@ body {
     font-weight: 700;
 }
 
-.header-right {
+.header-buttons {
     display: flex;
-    align-items: center;
     gap: 12px;
 }
 
-.header-buttons {
+.header-right {
     display: flex;
+    align-items: center;
     gap: 12px;
 }
 
@@ -85,7 +85,7 @@ label {
     margin-bottom: 6px;
 }
 
-/* Inputs + Selects: BLACK */
+/* Inputs + Selects */
 input[type="number"],
 select {
     width: 100%;
@@ -157,15 +157,7 @@ select:focus {
     font-weight: bold;
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    padding: 25px;
-    color: #5a6a7a;
-    font-size: 12px;
-}
-
-/* Workout submit button: dark blue */
+/* Workout submit button */
 .card:nth-child(2) .btn-primary {
     background-color: #1e40af !important;
     border-color: #1e40af !important;
@@ -175,7 +167,7 @@ footer {
     background-color: #1e3a8a !important;
 }
 
-/* Widen cards to fix alignment */
+/* Widen cards */
 main {
     max-width: 950px;
 }
@@ -187,7 +179,6 @@ main {
 /* ==============================
    AUTH PAGES (Login & Signup)
    ============================== */
-
 .auth-container {
     display: flex;
     justify-content: center;
@@ -453,6 +444,7 @@ main {
     text-decoration: none;
     cursor: pointer;
 }
+
 .btn-pdf:hover,
 .btn-back:hover {
     background-color: #43a047;
@@ -507,10 +499,12 @@ main {
     border-bottom: 3px solid transparent;
     cursor: pointer;
 }
+
 .day-tab.active {
     color: #1a73e8;
     border-bottom-color: #1a73e8;
 }
+
 .day-tab.rest {
     color: #3d4c5e;
     cursor: default;
@@ -544,6 +538,7 @@ main {
     border-radius: 8px;
     overflow: hidden;
 }
+
 .exercise-table th {
     background-color: transparent;
     color: #1a73e8;
@@ -555,12 +550,14 @@ main {
     text-transform: uppercase;
     border-bottom: 1px solid #2a3a4a;
 }
+
 .exercise-table td {
     padding: 12px 18px;
     border-bottom: 1px solid #22304a;
     color: #ffffff;
     font-size: 14px;
 }
+
 .exercise-table tbody tr:last-child td {
     border-bottom: none;
 }
@@ -573,6 +570,7 @@ main {
     margin-top: 20px;
     text-align: center;
 }
+
 .estimate-label {
     color: #1a73e8;
     font-size: 12px;
@@ -580,6 +578,7 @@ main {
     letter-spacing: 1px;
     text-transform: uppercase;
 }
+
 .estimate-value {
     color: #ffffff;
     font-size: 16px;
@@ -618,6 +617,7 @@ main {
     text-align: center;
     margin: 0 0 10px;
 }
+
 .rest-days-list {
     color: #ffffff;
     font-size: 18px;
@@ -631,6 +631,7 @@ main {
     margin: 0;
     padding: 0;
 }
+
 .schedule-list li {
     padding: 8px 0;
     border-bottom: 1px solid #22304a;
@@ -639,26 +640,24 @@ main {
     display: flex;
     gap: 8px;
 }
+
 .schedule-list li:last-child {
     border-bottom: none;
 }
+
 .schedule-day {
     color: #ffffff;
     font-weight: 700;
 }
+
 .schedule-split {
     color: #1a73e8;
     font-weight: 700;
 }
 
-@media (max-width: 700px) {
-    .summary-card { grid-template-columns: 1fr 1fr; }
-    .bottom-row { grid-template-columns: 1fr; }
-    .workout-header { flex-direction: column; gap: 16px; align-items: flex-start; }
-}
-
-
-/* Settings dropdown */
+/* ==============================
+   SETTINGS DROPDOWN
+   ============================== */
 .settings-dropdown {
     position: relative;
 }
@@ -682,8 +681,8 @@ main {
 .settings-menu {
     display: none;
     position: absolute;
-    right: 0;
     top: 100%;
+    right: 0;
     margin-top: 8px;
     background: #1e2634;
     border: 1px solid #2a3441;
@@ -715,4 +714,98 @@ main {
 
 .settings-delete {
     color: #f87171 !important;
+}
+
+/* ==============================
+   THEME TOGGLE (Moon icon)
+   ============================== */
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==============================
+   LIGHT THEME
+   ============================== */
+   .light-theme {
+    background-color: #ffffff;
+    color: #1a2332;
+}
+
+.light-theme .site-header h1 {
+    color: #1a2332;
+}
+
+.light-theme .card {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+
+.light-theme .card h2 {
+    color: #1a2332;
+    border-bottom-color: #ddd;
+}
+
+.light-theme label {
+    color: #1a2332;
+}
+
+.light-theme input[type="number"],
+.light-theme select {
+    background-color: #ffffff !important;
+    border-color: #ccc;
+    color: #1a2332;
+}
+
+.light-theme .theme-toggle {
+    color: #1a2332;
+    border: 2px solid #1a2332;
+    border-radius: 6px;
+}
+
+.light-theme .settings-menu {
+    background: #f0f0f0;
+    border-color: #ccc;
+}
+
+.light-theme .settings-menu a {
+    color: #1a2332;
+}
+
+.light-theme .settings-menu a:hover {
+    background: #e0e0e0;
+}
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 700px) {
+    .summary-card { grid-template-columns: 1fr 1fr; }
+    .bottom-row { grid-template-columns: 1fr; }
+    .workout-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+}
+
+/* Light theme info-text update */
+.light-theme .info-text {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+    color: #1a2332;
+}
+
+/* Dark theme UI toggle icon */
+.theme-toggle {
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+/* Light theme UI toggle icon */
+.light-theme .theme-toggle {
+    border-color: #1a2332;
 }
