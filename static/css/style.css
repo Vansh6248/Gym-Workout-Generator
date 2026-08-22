@@ -656,3 +656,63 @@ main {
     .bottom-row { grid-template-columns: 1fr; }
     .workout-header { flex-direction: column; gap: 16px; align-items: flex-start; }
 }
+
+
+/* Settings dropdown */
+.settings-dropdown {
+    position: relative;
+}
+
+.settings-btn {
+    background: #3b82f6;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.settings-btn:hover {
+    background: #2563eb;
+}
+
+.settings-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 8px;
+    background: #1e2634;
+    border: 1px solid #2a3441;
+    border-radius: 8px;
+    min-width: 180px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.settings-menu.show {
+    display: block;
+}
+
+.settings-menu a {
+    display: block;
+    padding: 10px 16px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.settings-menu a:hover {
+    background: #2a3a4a;
+}
+
+.settings-logout {
+    border-top: 1px solid #2a3441;
+}
+
+.settings-delete {
+    color: #f87171 !important;
+}
