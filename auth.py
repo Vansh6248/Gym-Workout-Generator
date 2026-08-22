@@ -1,81 +1,120 @@
+import hashlib
+import os
 import sqlite3
-from flask import render_template, request, session, redirect, url_for, flash, g
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import render_template, request, redirect, url_for, session, g
 
-DB_PATH = "accounts.db"
 
 def setup_auth(app):
-    # Runs before every request: makes g.user available in all templates.
+    """Set up authentication routes for the app."""
+
     @app.before_request
-    def load_logged_in_user():
+    def load_user():
         g.user = None
-        user_id = session.get("user_id")
-        if user_id is not None:
-            db = sqlite3.connect(DB_PATH)
-            db.row_factory = sqlite3.Row
-            g.user = db.execute(
-                "SELECT * FROM users WHERE id = ?", (user_id,)
-            ).fetchone()
-            db.close()
+        if "user_id" in session:
+            g.user = {"id": session["user_id"], "username": session["username"]}
 
     @app.route("/signup", methods=["GET", "POST"])
     def signup():
         if request.method == "POST":
-            username = request.form.get("username").strip()
-            password = request.form.get("password")
-            confirm_password = request.form.get("confirm_password")
+            username = request.form["username"]
+            password = request.form["password"]
+            confirm_password = request.form["confirm_password"]
 
             if password != confirm_password:
-                flash("Passwords do not match.", "error")
-                return redirect(url_for("signup"))
+                return render_template("signup.html", error="Passwords do not match.")
 
-            db = sqlite3.connect(DB_PATH)
+            conn = sqlite3.connect("accounts.db")
+            cursor = conn.cursor()
 
-            existing = db.execute(
-                "SELECT id FROM users WHERE username = ?", (username,)
-            ).fetchone()
-            if existing:
-                db.close()
-                flash("That username is already taken.", "error")
-                return redirect(url_for("signup"))
+            cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+            if cursor.fetchone():
+                conn.close()
+                return render_template("signup.html", error="Username already taken.")
 
-            # Using pbkdf2:sha256 to support Python 3.8
-            db.execute(
-                "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-                (username, generate_password_hash(password, method="pbkdf2:sha256")),
-            )
-            db.commit()
-            db.close()
-            flash("Account created! You can now log in.")
-            return redirect(url_for("login"))
+            password_hash = hash_password(password)
+            cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
+                           (username, password_hash))
+            conn.commit()
+            conn.close()
+
+            return render_template("login.html", success="Account created! Please log in.")
 
         return render_template("signup.html")
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
-            username = request.form.get("username").strip()
-            password = request.form.get("password")
+            username = request.form["username"]
+            password = request.form["password"]
 
-            db = sqlite3.connect(DB_PATH)
-            db.row_factory = sqlite3.Row
-            user = db.execute(
-                "SELECT * FROM users WHERE username = ?", (username,)
-            ).fetchone()
-            db.close()
+            conn = sqlite3.connect("accounts.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, username, password_hash FROM users WHERE username = ?",
+                           (username,))
+            user = cursor.fetchone()
+            conn.close()
 
-            if user is None or not check_password_hash(user["password_hash"], password):
-                flash("Invalid username or password.", "error")
-                return redirect(url_for("login"))
-
-            session.clear()
-            session["user_id"] = user["id"]
-            return redirect(url_for("home"))
+            if user and verify_password(password, user[2]):
+                session["user_id"] = user[0]
+                session["username"] = user[1]
+                return redirect(url_for("home"))
+            else:
+                return render_template("login.html", error="Invalid username or password.")
 
         return render_template("login.html")
 
     @app.route("/logout")
     def logout():
         session.clear()
-        flash("You have been logged out.")
         return redirect(url_for("home"))
+
+
+def hash_password(password):
+    """Hash a password using pbkdf2_hmac."""
+    salt = os.urandom(16)
+    password_hash = hashlib.pbkdf2_hmac(
+        'sha256',
+        password.encode('utf-8'),
+        salt,
+        100000
+    )
+    return salt.hex() + password_hash.hex()
+
+
+def verify_password(password, stored_hash):
+    """Verify a password against a stored hash."""
+    try:
+        salt = bytes.fromhex(stored_hash[:32])
+        password_hash = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            salt,
+            100000
+        )
+        return password_hash.hex() == stored_hash[32:]
+    except Exception:
+        return False
+
+
+def change_username(conn, current_username, new_username, current_password):
+    """Change a user's username."""
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, username, password_hash FROM users WHERE username = ?",
+                   (current_username,))
+    user = cursor.fetchone()
+
+    if not user:
+        return (False, "Current username not found.")
+
+    if not verify_password(current_password, user[2]):
+        return (False, "Incorrect password.")
+
+    cursor.execute("SELECT id FROM users WHERE username = ?", (new_username,))
+    if cursor.fetchone():
+        return (False, "That username is already taken.")
+
+    cursor.execute("UPDATE users SET username = ? WHERE id = ?", (new_username, user[0]))
+    conn.commit()
+
+    return (True, None)

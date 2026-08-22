@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Change Username</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1>CHANGE USERNAME</h1>
+
+            {% if error %}
+                <div class="auth-message auth-error">{{ error }}</div>
+            {% endif %}
+            {% if success %}
+                <div class="auth-message auth-success">{{ success }}</div>
+            {% endif %}
+
+            <form method="POST" action="/change-username">
+                <label>Current Username</label>
+                <input type="text" name="current_username" placeholder="Enter your current username" required>
+
+                <label>New Username</label>
+                <input type="text" name="new_username" placeholder="Enter your new username" required>
+
+                <label>Current Password</label>
+                <div class="input-wrapper">
+                    <input type="password" name="current_password" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword(this)">
+                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-blue">CHANGE USERNAME</button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <a href="/" class="back-link">← Return to Homepage</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(btn) {
+            const input = btn.parentElement.querySelector('input');
+            const eye = btn.querySelector('.eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.classList.add('hidden');
+            } else {
+                input.type = 'password';
+                eye.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
