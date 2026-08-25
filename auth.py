@@ -4,8 +4,24 @@ import sqlite3
 from flask import render_template, request, redirect, url_for, session, g
 
 
+def create_users_table():
+    """Create the users table if it does not already exist."""
+    conn = sqlite3.connect("accounts.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+
 def setup_auth(app):
     """Set up authentication routes for the app."""
+    create_users_table()
 
     @app.before_request
     def load_user():
