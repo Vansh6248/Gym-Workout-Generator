@@ -10,6 +10,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 if not app.secret_key:
     raise RuntimeError("SECRET_KEY is not set")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 setup_auth(app)
 
 
