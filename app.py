@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
 from workout_generator import generate_workout
@@ -6,7 +7,9 @@ from auth import setup_auth
 from auth import change_username as change_username_from_auth
 
 app = Flask(__name__)
-app.secret_key = "your-secret-key-change-this"
+app.secret_key = os.environ.get("SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError("SECRET_KEY is not set")
 setup_auth(app)
 
 
