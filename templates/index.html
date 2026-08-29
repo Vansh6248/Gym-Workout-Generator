@@ -49,6 +49,7 @@
         <div class="card">
             <h2> Calorie calculator </h2>
             <form id="calorie-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="activity_level">Choose activity level: </label>
                 <select id="activity_level" name="activity_level">
                     <option value="sedentary">Sedentary: Little to no exercise</option>
@@ -93,6 +94,7 @@
                   duration of the cardio exercises.
             </p>
             <form action="/generate" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="workout_goal">Select your workout goal:</label>
                 <select id="workout_goal" name="workout_goal">
                     <option value="lose_weight">Lose Weight</option>

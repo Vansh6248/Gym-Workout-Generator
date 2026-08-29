@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_wtf.csrf import CSRFProtect
 from workout_generator import generate_workout
 from calorie_calculator import calculate_calories
 from auth import setup_auth
@@ -12,6 +13,7 @@ if not app.secret_key:
     raise RuntimeError("SECRET_KEY is not set")
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+csrf = CSRFProtect(app)
 setup_auth(app)
 
 
