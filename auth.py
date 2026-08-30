@@ -1,5 +1,6 @@
 import hashlib
 import os
+import re
 import sqlite3
 from flask import render_template, request, redirect, url_for, session, g
 
@@ -19,6 +20,24 @@ def create_users_table():
     conn.close()
 
 
+def validate_username(username):
+    if len(username) < 3 or len(username) > 10:
+        return "Username should be 3-10 characters long"
+    if len(re.findall(r"[^A-Za-z0-9]", username)) > 1:
+        return "Username can only contain one special character"
+    return None
+
+
+def validate_password(password):
+    if len(password) < 5 or len(password) > 10:
+        return "Password should be 5-10 characters long"
+    if not re.search(r"[^A-Za-z0-9]", password):
+        return "Password should contain at least one special character"
+    if not re.search(r"[0-9]", password):
+        return "Password should contain at least one number"
+    return None
+
+
 def setup_auth(app, limiter):
     """Set up authentication routes for the app."""
     create_users_table()
@@ -36,6 +55,14 @@ def setup_auth(app, limiter):
             username = request.form["username"]
             password = request.form["password"]
             confirm_password = request.form["confirm_password"]
+
+            username_error = validate_username(username)
+            if username_error:
+                return render_template("signup.html", error=username_error)
+
+            password_error = validate_password(password)
+            if password_error:
+                return render_template("signup.html", error=password_error)
 
             if password != confirm_password:
                 return render_template("signup.html", error="Passwords do not match.")
@@ -127,6 +154,10 @@ def change_username(conn, current_username, new_username, current_password):
 
     if not verify_password(current_password, user[2]):
         return (False, "Incorrect password.")
+
+    username_error = validate_username(new_username)
+    if username_error:
+        return (False, username_error)
 
     cursor.execute("SELECT id FROM users WHERE username = ?", (new_username,))
     if cursor.fetchone():
