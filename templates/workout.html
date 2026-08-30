@@ -292,8 +292,19 @@ function makeRowEditable(row) {
         if (isNaN(sets)) {
             sets = 1;
         }
+        row.dataset.originalSets = sets;
+        var originalMinutes = parseInt(timeCell.textContent, 10);
+        if (isNaN(originalMinutes)) {
+            originalMinutes = parseInt(row.dataset.minutes, 10) || 0;
+        }
+        row.dataset.minutes = originalMinutes;
+
         setsCell.innerHTML = '<input class="edit-input" type="number" min="1" value="' + sets + '">';
         setsCell.querySelector('input').addEventListener('input', function() {
+            var newSets = parseInt(this.value, 10) || 0;
+            var origSets = parseInt(row.dataset.originalSets, 10) || 0;
+            var origMin = parseInt(row.dataset.minutes, 10) || 0;
+            timeCell.textContent = (origMin + 3 * (newSets - origSets)) + ' min';
             updatePanelTime(panel);
         });
 
@@ -322,6 +333,7 @@ function makeRowReadOnly(row) {
         if (repsInput) {
             repsCell.textContent = repsInput.value + ' reps';
         }
+        row.dataset.minutes = parseInt(timeCell.textContent, 10) || row.dataset.minutes;
     }
 }
 
@@ -348,15 +360,19 @@ function updatePanelTime(panel) {
             }
             cardioTime += duration;
         } else {
-            var minutes = parseInt(row.dataset.minutes, 10) || 0;
+            var originalMinutes = parseInt(row.dataset.minutes, 10) || 0;
+            var originalSets = parseInt(row.dataset.originalSets, 10);
             var setsInput = row.querySelector('.sets-cell input');
-            var sets;
+            var currentSets;
             if (setsInput) {
-                sets = parseInt(setsInput.value, 10) || 0;
+                currentSets = parseInt(setsInput.value, 10) || 0;
             } else {
-                sets = parseInt(row.querySelector('.sets-cell').textContent, 10) || 0;
+                currentSets = parseInt(row.querySelector('.sets-cell').textContent, 10) || 0;
             }
-            liftTime += minutes + sets;
+            if (isNaN(originalSets)) {
+                originalSets = currentSets;
+            }
+            liftTime += originalMinutes + originalSets + 3 * (currentSets - originalSets);
         }
     }
     var mainValue = panel.querySelector('.estimated-time:not(.cardio) .estimate-value');
