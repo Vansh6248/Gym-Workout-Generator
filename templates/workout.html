@@ -6,6 +6,33 @@
     <title>Your Workout Plan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .edit-input {
+            width: 72px;
+            padding: 6px 8px;
+            background-color: #000000;
+            border: 1px solid #3a4a5a;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        .edit-input.duration {
+            width: 110px;
+        }
+        .delete-exercise {
+            display: none;
+            background: none;
+            border: none;
+            color: #f87171;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+        }
+        .editing .delete-exercise {
+            display: inline;
+        }
+    </style>
 </head>
 <body>
 
@@ -25,7 +52,6 @@
 {% endfor %}
 {% if is_lower.v and (has_back.v or has_chest.v) %}FULL BODY
 {% elif is_lower.v %}LOWER
-{% elif has_back.v and has_chest.v %}UPPER
 {% elif has_back.v %}PULL
 {% elif has_chest.v %}PUSH
 {% else %}WORKOUT{% endif %}
@@ -47,7 +73,8 @@
         <h1 class="workout-title">YOUR WORKOUT PLAN: <span>{{ all_splits | join(' / ') }}</span></h1>
         <div class="workout-actions">
             {% if g.user %}
-            <button type="button" class="btn-pdf">Edit</button>
+            <button type="button" class="btn-pdf" id="edit-btn">Edit</button>
+            <button type="button" class="btn-pdf" id="save-btn" style="display: none;">Save</button>
             {% endif %}
             <button type="button" class="btn-pdf">Save As PDF</button>
             <a href="/" class="btn-back">&larr; Back to Home</a>
@@ -118,16 +145,20 @@
                     <th>SETS</th>
                     <th>REPS / DURATION</th>
                     <th>TIME</th>
+                    {% if g.user %}<th></th>{% endif %}
                 </tr>
             </thead>
             <tbody>
                 {% for ex in session["exercises"] %}
-                <tr>
-                    <td>{{ loop.index }}</td>
+                <tr data-cardio="{{ 1 if ex['cardio'] else 0 }}" data-minutes="{{ ex['minutes'] }}">
+                    <td class="index-cell">{{ loop.index }}</td>
                     <td>{{ ex["name"] }}</td>
-                    <td>{% if ex["sets"] is not none %}{{ ex["sets"] }}{% else %}&mdash;{% endif %}</td>
-                    <td>{% if ex["cardio"] %}{{ ex["minutes"] }} minutes{% else %}{{ ex["reps"] }} reps{% endif %}</td>
-                    <td>{{ ex["minutes"] }} min</td>
+                    <td class="sets-cell">{% if ex["sets"] is not none %}{{ ex["sets"] }}{% else %}&mdash;{% endif %}</td>
+                    <td class="reps-cell">{% if ex["cardio"] %}{{ ex["minutes"] }} minutes{% else %}{{ ex["reps"] }} reps{% endif %}</td>
+                    <td class="time-cell">{{ ex["minutes"] }} min</td>
+                    {% if g.user %}
+                    <td><button type="button" class="delete-exercise">Delete</button></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -191,7 +222,152 @@ function selectDay(day) {
 document.addEventListener('DOMContentLoaded', function() {
     var first = document.querySelector('.day-tab.active');
     if (first && first.id) { selectDay(first.id.replace('tab-', '')); }
+
+    var editBtn = document.getElementById('edit-btn');
+    var saveBtn = document.getElementById('save-btn');
+    if (!editBtn || !saveBtn) {
+        return;
+    }
+
+    editBtn.addEventListener('click', enterEditMode);
+    saveBtn.addEventListener('click', exitEditMode);
+
+    document.querySelector('.workout-page').addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-exercise')) {
+            var row = event.target.closest('tr');
+            var panel = event.target.closest('.day-panel');
+            row.parentNode.removeChild(row);
+            reindexRows(panel);
+            updatePanelTime(panel);
+        }
+    });
 });
+
+function enterEditMode() {
+    var page = document.querySelector('.workout-page');
+    if (page.classList.contains('editing')) {
+        return;
+    }
+    page.classList.add('editing');
+    document.getElementById('edit-btn').style.display = 'none';
+    document.getElementById('save-btn').style.display = '';
+    var rows = page.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        makeRowEditable(rows[i]);
+    }
+}
+
+function exitEditMode() {
+    var page = document.querySelector('.workout-page');
+    var rows = page.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        makeRowReadOnly(rows[i]);
+    }
+    page.classList.remove('editing');
+    document.getElementById('save-btn').style.display = 'none';
+    document.getElementById('edit-btn').style.display = '';
+}
+
+function makeRowEditable(row) {
+    var cardio = row.dataset.cardio === '1';
+    var setsCell = row.querySelector('.sets-cell');
+    var repsCell = row.querySelector('.reps-cell');
+    var timeCell = row.querySelector('.time-cell');
+    var panel = row.closest('.day-panel');
+
+    if (cardio) {
+        var duration = parseInt(repsCell.textContent, 10);
+        if (isNaN(duration)) {
+            duration = parseInt(row.dataset.minutes, 10) || 0;
+        }
+        repsCell.innerHTML = '<input class="edit-input duration" type="number" min="1" value="' + duration + '"> minutes';
+        repsCell.querySelector('input').addEventListener('input', function() {
+            var value = this.value;
+            timeCell.textContent = value + ' min';
+            row.dataset.minutes = value;
+            updatePanelTime(panel);
+        });
+    } else {
+        var sets = parseInt(setsCell.textContent, 10);
+        if (isNaN(sets)) {
+            sets = 1;
+        }
+        setsCell.innerHTML = '<input class="edit-input" type="number" min="1" value="' + sets + '">';
+        setsCell.querySelector('input').addEventListener('input', function() {
+            updatePanelTime(panel);
+        });
+
+        var repsText = repsCell.textContent.replace(' reps', '').trim();
+        repsCell.innerHTML = '<input class="edit-input" type="text" value="' + repsText + '">';
+    }
+}
+
+function makeRowReadOnly(row) {
+    var cardio = row.dataset.cardio === '1';
+    var setsCell = row.querySelector('.sets-cell');
+    var repsCell = row.querySelector('.reps-cell');
+    var timeCell = row.querySelector('.time-cell');
+    var setsInput = setsCell.querySelector('input');
+    var repsInput = repsCell.querySelector('input');
+
+    if (cardio) {
+        var duration = repsInput ? repsInput.value : parseInt(row.dataset.minutes, 10);
+        repsCell.textContent = duration + ' minutes';
+        timeCell.textContent = duration + ' min';
+        row.dataset.minutes = duration;
+    } else {
+        if (setsInput) {
+            setsCell.textContent = setsInput.value;
+        }
+        if (repsInput) {
+            repsCell.textContent = repsInput.value + ' reps';
+        }
+    }
+}
+
+function reindexRows(panel) {
+    var rows = panel.querySelectorAll('tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].querySelector('.index-cell').textContent = i + 1;
+    }
+}
+
+function updatePanelTime(panel) {
+    var rows = panel.querySelectorAll('tbody tr');
+    var liftTime = 0;
+    var cardioTime = 0;
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (row.dataset.cardio === '1') {
+            var durationInput = row.querySelector('.reps-cell input');
+            var duration;
+            if (durationInput) {
+                duration = parseInt(durationInput.value, 10) || 0;
+            } else {
+                duration = parseInt(row.dataset.minutes, 10) || 0;
+            }
+            cardioTime += duration;
+        } else {
+            var minutes = parseInt(row.dataset.minutes, 10) || 0;
+            var setsInput = row.querySelector('.sets-cell input');
+            var sets;
+            if (setsInput) {
+                sets = parseInt(setsInput.value, 10) || 0;
+            } else {
+                sets = parseInt(row.querySelector('.sets-cell').textContent, 10) || 0;
+            }
+            liftTime += minutes + sets;
+        }
+    }
+    var mainValue = panel.querySelector('.estimated-time:not(.cardio) .estimate-value');
+    if (mainValue) {
+        mainValue.textContent = liftTime + ' minutes';
+    }
+    var cardioValue = panel.querySelector('.estimated-time.cardio .estimate-value');
+    if (cardioValue) {
+        cardioValue.textContent = (liftTime + cardioTime) + ' minutes';
+    }
+}
 </script>
 </body>
 </html>
