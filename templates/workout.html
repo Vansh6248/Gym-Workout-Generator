@@ -46,6 +46,9 @@
     <header class="workout-header">
         <h1 class="workout-title">YOUR WORKOUT PLAN: <span>{{ all_splits | join(' / ') }}</span></h1>
         <div class="workout-actions">
+            {% if g.user %}
+            <button type="button" class="btn-pdf">Edit</button>
+            {% endif %}
             <button type="button" class="btn-pdf">Save As PDF</button>
             <a href="/" class="btn-back">&larr; Back to Home</a>
         </div>
