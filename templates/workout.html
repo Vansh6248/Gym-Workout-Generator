@@ -32,6 +32,21 @@
         .editing .delete-exercise {
             display: inline;
         }
+        .btn-save-blue {
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-save-blue:hover {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -74,9 +89,9 @@
         <div class="workout-actions">
             {% if g.user %}
             <button type="button" class="btn-pdf" id="edit-btn">Edit</button>
-            <button type="button" class="btn-pdf" id="save-btn" style="display: none;">Save</button>
+            <button type="button" class="btn-save-blue" id="save-workout-btn">Save workout</button>
+            <button type="button" class="btn-save-blue" id="save-btn" style="display: none;">Save Changes</button>
             {% endif %}
-            <button type="button" class="btn-pdf">Save As PDF</button>
             <a href="/" class="btn-back">&larr; Back to Home</a>
         </div>
     </header>
@@ -225,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var editBtn = document.getElementById('edit-btn');
     var saveBtn = document.getElementById('save-btn');
+    var saveWorkoutBtn = document.getElementById('save-workout-btn');
     if (!editBtn || !saveBtn) {
         return;
     }
@@ -250,6 +266,7 @@ function enterEditMode() {
     }
     page.classList.add('editing');
     document.getElementById('edit-btn').style.display = 'none';
+    document.getElementById('save-workout-btn').style.display = 'none';
     document.getElementById('save-btn').style.display = '';
     var rows = page.querySelectorAll('tbody tr');
     for (var i = 0; i < rows.length; i++) {
@@ -266,6 +283,7 @@ function exitEditMode() {
     page.classList.remove('editing');
     document.getElementById('save-btn').style.display = 'none';
     document.getElementById('edit-btn').style.display = '';
+    document.getElementById('save-workout-btn').style.display = '';
 }
 
 function makeRowEditable(row) {
