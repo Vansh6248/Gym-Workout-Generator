@@ -19,7 +19,7 @@ def create_users_table():
     conn.close()
 
 
-def setup_auth(app):
+def setup_auth(app, limiter):
     """Set up authentication routes for the app."""
     create_users_table()
 
@@ -30,6 +30,7 @@ def setup_auth(app):
             g.user = {"id": session["user_id"], "username": session["username"]}
 
     @app.route("/signup", methods=["GET", "POST"])
+    @limiter.limit("5 per minute", methods=["POST"])
     def signup():
         if request.method == "POST":
             username = request.form["username"]
@@ -58,6 +59,7 @@ def setup_auth(app):
         return render_template("signup.html")
 
     @app.route("/login", methods=["GET", "POST"])
+    @limiter.limit("5 per minute", methods=["POST"])
     def login():
         if request.method == "POST":
             username = request.form["username"]

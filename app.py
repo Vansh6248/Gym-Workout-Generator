@@ -2,6 +2,8 @@ import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from workout_generator import generate_workout
 from calorie_calculator import calculate_calories
 from auth import setup_auth
@@ -14,7 +16,12 @@ if not app.secret_key:
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 csrf = CSRFProtect(app)
-setup_auth(app)
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=[]
+)
+setup_auth(app, limiter)
 
 
 def get_db():
@@ -57,6 +64,7 @@ def calculate_calories_route():
 
 
 @app.route("/change-username", methods=["GET", "POST"])
+@limiter.limit("5 per minute", methods=["POST"])
 def change_username_page():
     if "user_id" not in session:
         return redirect(url_for("login"))
