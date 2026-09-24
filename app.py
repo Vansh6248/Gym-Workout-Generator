@@ -66,7 +66,7 @@ def calculate_calories_route():
     return {"calories": calories}
 
 
-#=============== SAVED WORKOUTS (logged in users only) =================#
+# ------------------------------- WORKOUT SAVING ------------------------------- 
 
 @app.route("/save-workout", methods=["POST"])
 @limiter.limit("10 per minute")
