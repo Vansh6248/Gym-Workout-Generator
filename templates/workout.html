@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Workout Plan</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
@@ -89,7 +90,9 @@
         <div class="workout-actions">
             {% if g.user %}
             <button type="button" class="btn-pdf" id="edit-btn">Edit</button>
-            <button type="button" class="btn-save-blue" id="save-workout-btn">Save workout</button>
+            <button type="button" class="btn-save-blue" id="save-workout-btn"
+                data-goal="{{ goal }}" data-days="{{ days }}"
+                data-experience="{{ experience }}" data-workout-length="{{ workout_length }}">Save workout</button>
             <button type="button" class="btn-save-blue" id="save-btn" style="display: none;">Save Changes</button>
             {% endif %}
             <a href="/" class="btn-back">&larr; Back to Home</a>
@@ -165,9 +168,10 @@
             </thead>
             <tbody>
                 {% for ex in session["exercises"] %}
-                <tr data-cardio="{{ 1 if ex['cardio'] else 0 }}" data-minutes="{{ ex['minutes'] }}">
+                <tr data-cardio="{{ 1 if ex['cardio'] else 0 }}" data-minutes="{{ ex['minutes'] }}"
+                    data-muscle="{{ ex['muscle'] }}" data-rest="{{ ex['rest_time'] }}">
                     <td class="index-cell">{{ loop.index }}</td>
-                    <td>{{ ex["name"] }}</td>
+                    <td class="name-cell">{{ ex["name"] }}</td>
                     <td class="sets-cell">{% if ex["sets"] is not none %}{{ ex["sets"] }}{% else %}&mdash;{% endif %}</td>
                     <td class="reps-cell">{% if ex["cardio"] %}{{ ex["minutes"] }} minutes{% else %}{{ ex["reps"] }} reps{% endif %}</td>
                     <td class="time-cell">{{ ex["minutes"] }} min</td>
@@ -247,6 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     editBtn.addEventListener('click', enterEditMode);
     saveBtn.addEventListener('click', exitEditMode);
+
+    if (saveWorkoutBtn) {
+        saveWorkoutBtn.addEventListener('click', saveWorkoutToAccount);
+    }
 
     document.querySelector('.workout-page').addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-exercise')) {
@@ -401,6 +409,104 @@ function updatePanelTime(panel) {
     if (cardioValue) {
         cardioValue.textContent = (liftTime + cardioTime) + ' minutes';
     }
+}
+
+/* ============ SAVE WORKOUT TO ACCOUNT (logged in users only) ============ */
+
+function collectWorkoutData() {
+    var workout = {};
+    var panels = document.querySelectorAll('.day-panel');
+    for (var i = 0; i < panels.length; i++) {
+        var day = panels[i].id.replace('panel-', '');
+        var exercises = [];
+        var rows = panels[i].querySelectorAll('tbody tr');
+        for (var j = 0; j < rows.length; j++) {
+            var row = rows[j];
+            var cardio = row.getAttribute('data-cardio') === '1';
+            var minutes = parseInt(row.getAttribute('data-minutes'), 10) || 0;
+            var rest = parseInt(row.getAttribute('data-rest'), 10) || 0;
+            var sets = null;
+            var reps = null;
+            if (!cardio) {
+                sets = parseInt(row.querySelector('.sets-cell').textContent, 10);
+                if (isNaN(sets)) {
+                    sets = null;
+                }
+                reps = row.querySelector('.reps-cell').textContent.replace(' reps', '').trim();
+            }
+            var nameCell = row.querySelector('.name-cell');
+            exercises.push({
+                name: nameCell ? nameCell.textContent.trim() : '',
+                muscle: row.getAttribute('data-muscle') || 'Cardio',
+                sets: sets,
+                reps: reps,
+                minutes: minutes,
+                rest_time: cardio ? 0 : rest,
+                cardio: cardio
+            });
+        }
+        var liftTime = 0;
+        var cardioTime = 0;
+        for (var k = 0; k < exercises.length; k++) {
+            if (exercises[k].cardio) {
+                cardioTime += exercises[k].minutes;
+            } else {
+                liftTime += exercises[k].minutes + exercises[k].rest_time;
+            }
+        }
+        workout[day] = {
+            exercises: exercises,
+            total_time: liftTime,
+            total_time_with_cardio: liftTime + cardioTime
+        };
+    }
+    return workout;
+}
+
+function saveWorkoutToAccount() {
+    var btn = document.getElementById('save-workout-btn');
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    if (!btn || !meta) {
+        return;
+    }
+    var payload = {
+        goal: btn.getAttribute('data-goal'),
+        days: parseInt(btn.getAttribute('data-days'), 10),
+        experience: btn.getAttribute('data-experience'),
+        workout_length: btn.getAttribute('data-workout-length'),
+        workout: collectWorkoutData()
+    };
+    var formData = new FormData();
+    formData.append('csrf_token', meta.getAttribute('content'));
+    formData.append('payload', JSON.stringify(payload));
+
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    fetch('/save-workout', { method: 'POST', body: formData })
+        .then(function(response) {
+            return response.json().catch(function() {
+                return null;
+            });
+        })
+        .then(function(data) {
+            if (data && data.success) {
+                btn.textContent = 'Saved!';
+                window.setTimeout(function() {
+                    btn.textContent = 'Save workout';
+                    btn.disabled = false;
+                }, 2000);
+            } else {
+                btn.textContent = 'Save workout';
+                btn.disabled = false;
+                alert((data && data.error) || 'Could not save workout.');
+            }
+        })
+        .catch(function() {
+            btn.textContent = 'Save workout';
+            btn.disabled = false;
+            alert('Could not save workout.');
+        });
 }
 </script>
 </body>

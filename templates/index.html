@@ -135,6 +135,11 @@
                     <button type="submit" class="btn btn-primary">Submit Workout Preferences</button>
                 </div>
             </form>
+            {% if g.user %}
+            <div class="saved-workouts-row">
+                <a href="/saved-workouts" class="btn-saved-workouts">Saved Workouts</a>
+            </div>
+            {% endif %}
         </div>
     </main>
     <script>

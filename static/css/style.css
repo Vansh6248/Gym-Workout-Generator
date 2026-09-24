@@ -833,3 +833,97 @@ main {
     border: 1px solid rgba(134, 239, 172, 0.3);
     color: #86efac;
 }
+
+/* ==============================
+   SAVED WORKOUTS (homepage button + library page)
+   ============================== */
+.saved-workouts-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.btn-saved-workouts {
+    background-color: #6b8a3d;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.btn-saved-workouts:hover {
+    background-color: #5a7532;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.saved-workouts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.saved-workout-card {
+    background-color: transparent;
+    border: 1px solid #2a3a4a;
+    border-radius: 8px;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.saved-workout-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.saved-workout-label {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.saved-workout-date {
+    color: #8a9bad;
+    font-size: 13px;
+}
+
+.btn-delete-saved-workout {
+    background: none;
+    border: none;
+    color: #f87171;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.saved-workouts-empty {
+    border: 1px solid #2a3a4a;
+    border-radius: 8px;
+    padding: 40px 24px;
+    text-align: center;
+}
+
+.saved-workouts-empty p {
+    color: #8a9bad;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+    .saved-workout-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

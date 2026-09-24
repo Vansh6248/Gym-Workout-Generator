@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Workouts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="workout-page">
+
+        <header class="workout-header">
+            <h1 class="workout-title">SAVED WORKOUTS</h1>
+            <div class="workout-actions">
+                <a href="/" class="btn-back">&larr; Back to Home</a>
+            </div>
+        </header>
+
+        {% if workouts %}
+        <div class="saved-workouts-list">
+            {% for w in workouts %}
+            <div class="saved-workout-card">
+                <div class="saved-workout-info">
+                    <span class="saved-workout-label">{{ w.label }}</span>
+                    <span class="saved-workout-date">Saved on {{ w.created_at }}</span>
+                </div>
+                <form action="/delete-saved-workout/{{ w.id }}" method="POST"
+                      onsubmit="return confirm('Delete this saved workout?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-delete-saved-workout">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="saved-workouts-empty">
+            <p>You have no saved workouts</p>
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>
