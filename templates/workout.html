@@ -92,7 +92,8 @@
             <button type="button" class="btn-pdf" id="edit-btn">Edit</button>
             <button type="button" class="btn-save-blue" id="save-workout-btn"
                 data-goal="{{ goal }}" data-days="{{ days }}"
-                data-experience="{{ experience }}" data-workout-length="{{ workout_length }}">Save workout</button>
+                data-experience="{{ experience }}" data-workout-length="{{ workout_length }}"
+                data-saved-id="{{ saved_id }}">Save workout</button>
             <button type="button" class="btn-save-blue" id="save-btn" style="display: none;">Save Changes</button>
             {% endif %}
             <a href="/" class="btn-back">&larr; Back to Home</a>
@@ -411,7 +412,7 @@ function updatePanelTime(panel) {
     }
 }
 
-// WORKOUT SAVING 
+/* ============ SAVE WORKOUT TO ACCOUNT (logged in users only) ============ */
 
 function collectWorkoutData() {
     var workout = {};
@@ -470,6 +471,7 @@ function saveWorkoutToAccount() {
         return;
     }
     var payload = {
+        saved_id: parseInt(btn.getAttribute('data-saved-id'), 10) || 0,
         goal: btn.getAttribute('data-goal'),
         days: parseInt(btn.getAttribute('data-days'), 10),
         experience: btn.getAttribute('data-experience'),
@@ -491,6 +493,9 @@ function saveWorkoutToAccount() {
         })
         .then(function(data) {
             if (data && data.success) {
+                if (data.saved_id) {
+                    btn.setAttribute('data-saved-id', String(data.saved_id));
+                }
                 btn.textContent = 'Saved!';
                 window.setTimeout(function() {
                     btn.textContent = 'Save workout';

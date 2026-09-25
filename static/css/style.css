@@ -927,3 +927,31 @@ main {
         align-items: flex-start;
     }
 }
+
+/* ==============================
+   SAVED WORKOUTS: EDIT + DELETE BUTTONS
+   ============================== */
+.saved-workout-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.btn-edit-saved-workout {
+    background: none;
+    border: none;
+    color: #60a5fa;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.btn-edit-saved-workout:hover {
+    color: #93c5fd;
+}
+
+.btn-delete-saved-workout:hover {
+    color: #fca5a5;
+}
