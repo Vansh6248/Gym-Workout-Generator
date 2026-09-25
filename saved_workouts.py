@@ -2,6 +2,9 @@ import json
 import sqlite3
 from datetime import datetime
 
+
+#=============== SAVED WORKOUTS TABLE (logged in users only) =================#
+
 #Create the saved_workouts table in accounts.db if it does not exist
 def create_saved_workouts_table():
     conn = sqlite3.connect("accounts.db")
@@ -51,7 +54,30 @@ def get_saved_workouts(conn, user_id):
     """, (user_id,))
     return cursor.fetchall()
 
-#Delete one of the user's saved workouts (the user_id check stops users from deleing each other's workouts)
+#Get one saved workout for a user (returns None if it is not theirs)
+def get_saved_workout_by_id(conn, user_id, workout_id):
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, goal, days, experience, workout_length, workout_json, created_at
+        FROM saved_workouts
+        WHERE id = ? AND user_id = ?
+    """, (workout_id, user_id))
+    return cursor.fetchone()
+
+#Update one of the user's saved workouts in place (used when they edit
+#a saved workout and hit "Save workout" again)
+def update_saved_workout(conn, user_id, workout_id, goal, days, experience, workout_length, workout):
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE saved_workouts
+        SET goal = ?, days = ?, experience = ?, workout_length = ?, workout_json = ?
+        WHERE id = ? AND user_id = ?
+    """, (goal, days, experience, workout_length, json.dumps(workout), workout_id, user_id))
+    conn.commit()
+    return cursor.rowcount > 0
+
+#Delete one of the user's saved workouts (the user_id check stops
+#users from deleting each other's workouts)
 def delete_saved_workout(conn, user_id, workout_id):
     cursor = conn.cursor()
     cursor.execute(
@@ -60,6 +86,9 @@ def delete_saved_workout(conn, user_id, workout_id):
     )
     conn.commit()
     return cursor.rowcount > 0
+
+
+#=============== VALIDATION + LABELS =================#
 
 GOAL_LABELS = {
     "lose_weight": "Lose Weight",
@@ -79,7 +108,8 @@ LENGTH_LABELS = {
 
 LOWER_MUSCLES = ["Quads", "Hamstrings", "Glutes", "Calves"]
 
-#Validate the data posted by the "Save workout" button. Returns an error message, or None if everything is fine.
+#Validate the data posted by the "Save workout" button.
+#Returns an error message, or None if everything is fine.
 def validate_workout_data(goal, days, experience, workout_length, workout):
     if goal not in GOAL_LABELS:
         return "Invalid workout goal."
@@ -97,7 +127,9 @@ def validate_workout_data(goal, days, experience, workout_length, workout):
         return "Invalid workout data."
     return None
 
-#Work out the split name of one session. Uses the same logic as the split_short macro on the workout page, so the labels in the saved workouts list always match what the user saw when it was generated.
+#Work out the split name of one session. Uses the same logic as the
+#split_short macro on the workout page, so the labels in the saved
+#workouts list always match what the user saw when it was generated.
 def split_short(session):
     is_lower = False
     has_back = False
@@ -133,7 +165,8 @@ def split_short(session):
         return "Push"
     return "Workout"
 
-#Build the one-line label shown in the saved workouts list, e.g. "Gain Muscle · 6 days/week · Medium (30-45 minutes per session) · Adept · Push/Pull/Lower"
+#Build the one-line label shown in the saved workouts list, e.g.
+#"Gain Muscle · 6 days/week · Medium (30-45 minutes per session) · Adept · Push/Pull/Lower"
 def build_workout_label(goal, days, experience, workout_length, workout):
     parts = []
     if goal in GOAL_LABELS:

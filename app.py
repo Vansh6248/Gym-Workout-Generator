@@ -51,7 +51,8 @@ def generate():
         goal=goal,
         experience=experience,
         days=days,
-        workout_length=workout_length
+        workout_length=workout_length,
+        saved_id=0
     )
 
 
@@ -66,7 +67,7 @@ def calculate_calories_route():
     return {"calories": calories}
 
 
-# ------------------------------- WORKOUT SAVING ------------------------------- 
+#=============== SAVED WORKOUTS (logged in users only) =================#
 
 @app.route("/save-workout", methods=["POST"])
 @limiter.limit("10 per minute")
@@ -81,6 +82,14 @@ def save_workout_route():
     if not isinstance(data, dict):
         return {"success": False, "error": "Invalid workout data."}, 400
 
+    #0 = brand new save, anything above 0 = update an existing saved workout
+    try:
+        saved_id = int(data.get("saved_id") or 0)
+    except (TypeError, ValueError):
+        saved_id = 0
+    if saved_id < 0:
+        saved_id = 0
+
     error = saved_workouts.validate_workout_data(
         data.get("goal"),
         data.get("days"),
@@ -93,7 +102,24 @@ def save_workout_route():
 
     conn = get_db()
     try:
-        saved_workouts.save_workout(
+        if saved_id > 0:
+            #Saving from the "Edit" page: update that saved workout in place
+            updated = saved_workouts.update_saved_workout(
+                conn,
+                session["user_id"],
+                saved_id,
+                data["goal"],
+                int(data["days"]),
+                data["experience"],
+                data["workout_length"],
+                data["workout"]
+            )
+            if not updated:
+                return {"success": False,
+                        "error": "This saved workout no longer exists."}, 404
+            return {"success": True, "saved_id": saved_id}
+
+        saved_id = saved_workouts.save_workout(
             conn,
             session["user_id"],
             data["goal"],
@@ -105,7 +131,7 @@ def save_workout_route():
     finally:
         conn.close()
 
-    return {"success": True}
+    return {"success": True, "saved_id": saved_id}
 
 
 @app.route("/saved-workouts")
@@ -138,6 +164,39 @@ def saved_workouts_page():
         })
 
     return render_template("saved_workouts.html", workouts=workouts)
+
+
+@app.route("/edit-saved-workout/<int:workout_id>")
+def edit_saved_workout_route(workout_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    try:
+        row = saved_workouts.get_saved_workout_by_id(conn, session["user_id"], workout_id)
+    finally:
+        conn.close()
+
+    if row is None:
+        return redirect(url_for("saved_workouts_page"))
+
+    try:
+        workout = json.loads(row["workout_json"])
+    except ValueError:
+        return redirect(url_for("saved_workouts_page"))
+
+    if not isinstance(workout, dict) or not workout:
+        return redirect(url_for("saved_workouts_page"))
+
+    return render_template(
+        "workout.html",
+        workout=workout,
+        goal=row["goal"],
+        days=row["days"],
+        experience=row["experience"],
+        workout_length=row["workout_length"],
+        saved_id=workout_id
+    )
 
 
 @app.route("/delete-saved-workout/<int:workout_id>", methods=["POST"])
