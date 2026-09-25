@@ -955,3 +955,31 @@ main {
 .btn-delete-saved-workout:hover {
     color: #fca5a5;
 }
+
+/* ==============================
+   SETTINGS MENU: DELETE ACCOUNT BUTTON
+   ============================== */
+.settings-menu form {
+    margin: 0;
+}
+
+.settings-delete-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    color: #f87171;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.settings-delete-btn:hover {
+    background: #2a3a4a;
+}
+
+.light-theme .settings-delete-btn:hover {
+    background: #e0e0e0;
+}

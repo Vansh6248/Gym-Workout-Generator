@@ -9,6 +9,7 @@ from workout_generator import generate_workout
 from calorie_calculator import calculate_calories
 from auth import setup_auth
 from auth import change_username as change_username_from_auth
+from auth import delete_user as delete_user_from_auth
 import saved_workouts
 
 app = Flask(__name__)
@@ -212,6 +213,29 @@ def delete_saved_workout_route(workout_id):
         conn.close()
 
     return redirect(url_for("saved_workouts_page"))
+
+
+#=============== DELETE ACCOUNT (logged in users only) =================#
+
+@app.route("/delete-account", methods=["POST"])
+@limiter.limit("5 per minute")
+def delete_account_route():
+    if "user_id" not in session:
+        return redirect(url_for("home"))
+
+    user_id = session["user_id"]
+
+    #Log the user out first, then delete the account and all of its data
+    session.clear()
+
+    conn = get_db()
+    try:
+        saved_workouts.delete_all_saved_workouts(conn, user_id)
+        delete_user_from_auth(conn, user_id)
+    finally:
+        conn.close()
+
+    return redirect(url_for("home"))
 
 
 @app.route("/change-username", methods=["GET", "POST"])

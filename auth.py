@@ -167,3 +167,11 @@ def change_username(conn, current_username, new_username, current_password):
     conn.commit()
 
     return (True, None)
+
+
+def delete_user(conn, user_id):
+    """Delete a user account. Returns True if a row was deleted."""
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    return cursor.rowcount > 0

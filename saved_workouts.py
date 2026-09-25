@@ -87,6 +87,16 @@ def delete_saved_workout(conn, user_id, workout_id):
     conn.commit()
     return cursor.rowcount > 0
 
+#Delete ALL of a user's saved workouts (used when they delete their account)
+def delete_all_saved_workouts(conn, user_id):
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM saved_workouts WHERE user_id = ?",
+        (user_id,)
+    )
+    conn.commit()
+    return cursor.rowcount
+
 
 #=============== VALIDATION + LABELS =================#
 
