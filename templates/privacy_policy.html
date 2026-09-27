@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-left">
+            <a href="/" class="btn-back-home">&larr; Back to Home</a>
+            <h1> WORKOUT GENERATOR </h1>
+        </div>
+        <div class="header-right">
+            {% if g.user %}
+                <span class="info-text" style="margin-bottom: 0; display: inline-block;">Logged in as {{ g.user['username'] }}</span>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <div class="settings-dropdown">
+                    <button class="settings-btn" onclick="toggleSettings()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </button>
+                    <div class="settings-menu" id="settingsMenu">
+                        <a href="/change-username">Change Username</a>
+                        <a href="/privacy-policy">Privacy Policy</a>
+                        <a href="/terms-of-service">Terms of Service</a>
+                        <a href="/logout" class="settings-logout">Log Out</a>
+                        <form action="/delete-account" method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete your account?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="settings-delete-btn">Delete Account</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <span class="info-text" style="margin-bottom: 0; display: inline-block;">Login to save/edit workouts</span>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <div class="header-buttons">
+                    <a href="/login" class="btn btn-login">LOG IN</a>
+                    <a href="/signup" class="btn btn-signup">SIGN UP</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <div class="card legal-card">
+            <h1 class="legal-title">PRIVACY POLICY</h1>
+            <p class="legal-updated">Effective date: 27 September 2026</p>
+
+            <p class="legal-text">
+                Gym Workout Generator ("this site") is a free web application that creates
+                personalised gym workout plans. This policy explains, in plain English, what
+                information the site collects and what it does with it. We keep it short
+                because the honest answer is: we collect very little.
+            </p>
+
+            <h2>What we collect</h2>
+            <p class="legal-text">
+                <strong>Account information.</strong> If you create an account, we store the username
+                you choose and your password. Your password is never stored in plain text — it is
+                hashed (PBKDF2-SHA256 with a unique salt) before it is saved.
+            </p>
+            <p class="legal-text">
+                <strong>Your saved workouts.</strong> If you save a workout, we store the workout
+                itself (your goal, days per week, experience level, session length and exercises),
+                the date you saved it, and which account it belongs to.
+            </p>
+            <p class="legal-text">
+                <strong>Technical data.</strong> The site uses a single essential cookie so you can
+                stay logged in, and it temporarily sees your IP address in order to rate-limit
+                requests and prevent abuse. Your theme preference (dark/light) is stored in your
+                own browser and never sent to us.
+            </p>
+
+            <h2>What we don't collect</h2>
+            <p class="legal-text">
+                We do not ask for or store your email address, real name, or any payment details.
+                The numbers you enter into the calorie calculator (weight, height, age, sex) are
+                sent only to calculate your result — they are never stored.
+            </p>
+            <p class="legal-text">
+                We do not use analytics, advertising, or third-party trackers of any kind, and we
+                do not share, sell, or transfer your data to anyone.
+            </p>
+
+            <h2>How your data is used</h2>
+            <p class="legal-text">
+                Solely to operate the site: to log you in, to show you your saved workouts, and to
+                protect the service from abuse.
+            </p>
+
+            <h2>How long we keep it</h2>
+            <p class="legal-text">
+                Until you delete it. You can delete individual saved workouts at any time, or
+                delete your account from the settings menu — deleting your account permanently
+                removes your username, your password, and every workout you have saved.
+            </p>
+
+            <h2>Security</h2>
+            <p class="legal-text">
+                Passwords are hashed, forms are CSRF-protected, and requests are rate-limited. No
+                system is perfectly secure, so we deliberately store the minimum amount of data
+                necessary.
+            </p>
+
+            <h2>Changes to this policy</h2>
+            <p class="legal-text">
+                If this policy changes, the updated version will be posted on this page with a new
+                effective date.
+            </p>
+
+            <h2>Contact</h2>
+            <p class="legal-text">
+                Questions about this policy? Contact us at: <strong>your-project-email@gmail.com</strong>
+            </p>
+        </div>
+    </main>
+
+    <script>
+        function toggleSettings() {
+            document.getElementById('settingsMenu').classList.toggle('show');
+        }
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('settingsMenu');
+            const btn = document.querySelector('.settings-btn');
+            if (menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+    </script>
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+</body>
+</html>
