@@ -102,6 +102,7 @@ def setup_auth(app, limiter):
             if user and verify_password(password, user[2]):
                 session["user_id"] = user[0]
                 session["username"] = user[1]
+                session.permanent = "remember" in request.form
                 return redirect(url_for("home"))
             else:
                 return render_template("login.html", error="Invalid username or password.")
