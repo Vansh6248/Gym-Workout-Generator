@@ -238,6 +238,18 @@ def delete_account_route():
     return redirect(url_for("home"))
 
 
+#=============== LEGAL PAGES (public) =================#
+
+@app.route("/privacy-policy")
+def privacy_policy_page():
+    return render_template("privacy_policy.html")
+
+
+@app.route("/terms-of-service")
+def terms_of_service_page():
+    return render_template("terms_of_service.html")
+
+
 @app.route("/change-username", methods=["GET", "POST"])
 @limiter.limit("5 per minute", methods=["POST"])
 def change_username_page():

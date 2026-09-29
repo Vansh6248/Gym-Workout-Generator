@@ -983,3 +983,100 @@ main {
 .light-theme .settings-delete-btn:hover {
     background: #e0e0e0;
 }
+
+/* ==============================
+   LEGAL PAGES (privacy policy + terms of service)
+   ============================== */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-back-home {
+    display: inline-block;
+    color: #ffffff;
+    background-color: transparent;
+    border: 1px solid #2a3a4a;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-back-home:hover {
+    background-color: #2a3a4a;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.light-theme .btn-back-home {
+    color: #1a2332;
+    border-color: #ccc;
+}
+
+.light-theme .btn-back-home:hover {
+    background-color: #e0e0e0;
+}
+
+.legal-card {
+    padding: 34px 40px;
+}
+
+.legal-card h2 {
+    margin-top: 34px;
+}
+
+.legal-title {
+    font-size: 26px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    color: #ffffff;
+}
+
+.legal-updated {
+    color: #8a9bad;
+    font-size: 13px;
+    margin: 0 0 26px;
+}
+
+.legal-text {
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 14px;
+}
+
+.legal-list {
+    color: #ffffff;
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 14px;
+    padding-left: 22px;
+}
+
+.legal-list li {
+    margin-bottom: 8px;
+}
+
+.light-theme .legal-title,
+.light-theme .legal-text,
+.light-theme .legal-list {
+    color: #1a2332;
+}
+
+/* ==============================
+   SIGNUP: AGREE-TO-TERMS LINE
+   ============================== */
+.auth-card p.terms-agree {
+    font-size: 13px;
+    margin: 14px 0 0;
+}
+
+.auth-card p.terms-agree a {
+    text-decoration: underline;
+}
