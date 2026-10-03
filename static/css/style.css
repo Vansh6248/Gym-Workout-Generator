@@ -1080,3 +1080,21 @@ main {
 .auth-card p.terms-agree a {
     text-decoration: underline;
 }
+
+/* ==============================
+   SAVED WORKOUTS: SAVE AS PDF BUTTON
+   ============================== */
+.btn-pdf-saved-workout {
+    background: none;
+    border: none;
+    color: #7cb342;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.btn-pdf-saved-workout:hover {
+    color: #9ccc65;
+}
