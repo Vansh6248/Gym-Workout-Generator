@@ -1,6 +1,7 @@
 import json
 import sqlite3
 from datetime import datetime
+from fpdf import FPDF
 
 
 #=============== SAVED WORKOUTS TABLE (logged in users only) =================#
@@ -204,3 +205,78 @@ def build_workout_label(goal, days, experience, workout_length, workout):
         if splits:
             parts.append("/".join(splits))
     return " · ".join(parts)
+
+
+#=============== SAVE AS PDF =================#
+
+#The built-in PDF fonts only cover Latin-1 characters, so swap
+#anything unusual (emoji, fancy dashes) for "?" instead of crashing
+def _pdf_safe(text):
+    return str(text).encode("latin-1", "replace").decode("latin-1")
+
+#Turn a stored workout into a simple, clean PDF and return it as bytes.
+#Deliberately contains just the workout itself - no preferences.
+def build_workout_pdf(workout):
+    pdf = FPDF()
+    pdf.set_margins(15, 15, 15)
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.add_page()
+    pdf.set_font("Helvetica", "B", 20)
+    pdf.cell(0, 12, "Your Workout Plan", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(4)
+
+    for day, session in workout.items():
+        if not isinstance(session, dict):
+            continue
+        exercises = session.get("exercises") or []
+        if not exercises:
+            continue
+
+        pdf.ln(4)
+        pdf.set_font("Helvetica", "B", 14)
+        pdf.cell(0, 10, _pdf_safe(day).upper(), new_x="LMARGIN", new_y="NEXT")
+        pdf.ln(1)
+
+        pdf.set_font("Helvetica", "", 11)
+        with pdf.table(
+            text_align="LEFT",
+            line_height=7,
+            col_widths=(50, 10, 22, 18),
+        ) as table:
+            heading = table.row()
+            heading.cell("Exercise")
+            heading.cell("Sets")
+            heading.cell("Reps / Duration")
+            heading.cell("Time")
+
+            for exercise in exercises:
+                if not isinstance(exercise, dict):
+                    continue
+                cardio = bool(exercise.get("cardio"))
+                minutes = exercise.get("minutes")
+                row = table.row()
+                row.cell(_pdf_safe(exercise.get("name", "")))
+                if cardio or exercise.get("sets") is None:
+                    row.cell("-")
+                else:
+                    row.cell(_pdf_safe(exercise.get("sets")))
+                if cardio:
+                    row.cell(_pdf_safe(minutes) + " minutes")
+                else:
+                    reps_text = _pdf_safe(exercise.get("reps", ""))
+                    if reps_text.lower().endswith(" reps"):
+                        reps_text = reps_text[:-5].strip()
+                    row.cell(reps_text + " reps")
+                row.cell(_pdf_safe(minutes) + " min")
+
+        total = session.get("total_time_with_cardio")
+        if total is None:
+            total = session.get("total_time")
+        if isinstance(total, (int, float)):
+            pdf.ln(2)
+            pdf.set_font("Helvetica", "", 11)
+            pdf.cell(0, 8, "Estimated time: " + str(int(total)) + " minutes",
+                     new_x="LMARGIN", new_y="NEXT")
+
+    return bytes(pdf.output())
