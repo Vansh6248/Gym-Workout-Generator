@@ -1,7 +1,8 @@
 import os
 import json
+import io
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -197,6 +198,38 @@ def edit_saved_workout_route(workout_id):
         experience=row["experience"],
         workout_length=row["workout_length"],
         saved_id=workout_id
+    )
+
+
+@app.route("/download-saved-workout/<int:workout_id>")
+def download_saved_workout_route(workout_id):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    try:
+        row = saved_workouts.get_saved_workout_by_id(conn, session["user_id"], workout_id)
+    finally:
+        conn.close()
+
+    if row is None:
+        return redirect(url_for("saved_workouts_page"))
+
+    try:
+        workout = json.loads(row["workout_json"])
+    except ValueError:
+        return redirect(url_for("saved_workouts_page"))
+
+    if not isinstance(workout, dict) or not workout:
+        return redirect(url_for("saved_workouts_page"))
+
+    pdf_bytes = saved_workouts.build_workout_pdf(workout)
+
+    return send_file(
+        io.BytesIO(pdf_bytes),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name="saved-workout-" + str(workout_id) + ".pdf"
     )
 
 
