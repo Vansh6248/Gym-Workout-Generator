@@ -138,9 +138,7 @@ def validate_workout_data(goal, days, experience, workout_length, workout):
         return "Invalid workout data."
     return None
 
-#Work out the split name of one session. Uses the same logic as the
-#split_short macro on the workout page, so the labels in the saved
-#workouts list always match what the user saw when it was generated.
+#Work out the split name of one session. Uses the same logic as the split_short macro on the workout page, so the labels in the saved workouts list always match what the user saw when it was generated.
 def split_short(session):
     is_lower = False
     has_back = False
@@ -176,8 +174,7 @@ def split_short(session):
         return "Push"
     return "Workout"
 
-#Build the one-line label shown in the saved workouts list, e.g.
-#"Gain Muscle · 6 days/week · Medium (30-45 minutes per session) · Adept · Push/Pull/Lower"
+#Build the one-line label shown in the saved workouts list
 def build_workout_label(goal, days, experience, workout_length, workout):
     parts = []
     if goal in GOAL_LABELS:
@@ -210,7 +207,7 @@ def build_workout_label(goal, days, experience, workout_length, workout):
 #=============== SAVE AS PDF =================#
 
 #The built-in PDF fonts only cover Latin-1 characters, so swap
-#anything unusual (emoji, fancy dashes) for "?" instead of crashing
+#anything unusual automatically turns to "?" instead of crashing
 def _pdf_safe(text):
     return str(text).encode("latin-1", "replace").decode("latin-1")
 
