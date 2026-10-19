@@ -19,6 +19,8 @@ if not app.secret_key:
     raise RuntimeError("SECRET_KEY is not set")
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+#Set SESSION_COOKIE_SECURE=1 on the host once the site runs over HTTPS
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "").lower() in ("1", "true", "yes")
 csrf = CSRFProtect(app)
 limiter = Limiter(
     key_func=get_remote_address,
@@ -27,6 +29,13 @@ limiter = Limiter(
 )
 setup_auth(app, limiter)
 saved_workouts.create_saved_workouts_table()
+
+#Some hosts put the app behind a reverse proxy, which makes every visitor
+#share the proxy's IP (and therefore one shared rate-limit bucket). If
+#that happens on your host, set PROXY_FIX=1 so real visitor IPs are used.
+if os.environ.get("PROXY_FIX", "").lower() in ("1", "true", "yes"):
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 
 def get_db():
@@ -44,7 +53,12 @@ def home():
 def generate():
     goal = request.form.get("workout_goal")
     experience = request.form.get("experience_level")
-    days = int(request.form.get("workout_days"))
+    #Bad or missing days (e.g. from a crafted request) used to crash the
+    #app with a 500 - send the visitor back to the homepage instead
+    try:
+        days = int(request.form.get("workout_days", ""))
+    except (TypeError, ValueError):
+        return redirect(url_for("home"))
     workout_length = request.form.get("workout_length")
     workout = generate_workout(goal, experience, days, workout_length)
     return render_template(
@@ -60,9 +74,19 @@ def generate():
 
 @app.route("/calculate-calories", methods=["POST"])
 def calculate_calories_route():
-    weight = float(request.form.get("weight"))
-    height = float(request.form.get("height"))
-    age = int(request.form.get("age"))
+    try:
+        weight = float(request.form.get("weight", ""))
+        height = float(request.form.get("height", ""))
+        age = int(request.form.get("age", ""))
+    except (TypeError, ValueError):
+        return {"error": "Please enter valid numbers for weight, height and age."}, 400
+    #The same ranges the form enforces in the browser, checked on the server
+    if not (45 <= weight <= 140):
+        return {"error": "Weight must be between 45 and 140 kg."}, 400
+    if not (150 <= height <= 200):
+        return {"error": "Height must be between 150 and 200 cm."}, 400
+    if not (19 <= age <= 78):
+        return {"error": "Age must be between 19 and 78."}, 400
     sex = request.form.get("sex")
     activity_level = request.form.get("activity_level")
     calories = calculate_calories(weight, height, age, sex, activity_level)
@@ -310,5 +334,7 @@ def change_username_page():
     return render_template("change_username.html")
 
 
+#Debug mode is off unless FLASK_DEBUG=1 is set. Never turn it on for a
+#server that is reachable from the internet.
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=os.environ.get("FLASK_DEBUG") == "1")
